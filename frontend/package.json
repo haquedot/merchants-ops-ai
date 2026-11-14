@@ -1,9 +1,9 @@
 {
-  "name": "paytm-merchantops-frontend",
+  "name": "paytm-saathi-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Paytm MerchantOps AI — Autonomous Merchant Teammate Dashboard.",
+  "description": "Paytm Saathi — Autonomous AI Teammate for Merchant Operations.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
