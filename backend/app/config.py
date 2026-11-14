@@ -1,0 +1,140 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pydantic_settings import BaseSettings, SettingsConfigDict  # type: ignore[import-not-found]
+else:
+    try:
+        from pydantic_settings import BaseSettings, SettingsConfigDict  # type: ignore[import-not-found]
+    except ImportError:  # pragma: no cover
+        from pydantic import BaseSettings
+
+        SettingsConfigDict = dict
+
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+
+    # --- Gemini agent layer (app/agent/) -------------------------------
+    # All optional with conservative free-tier defaults, so the core API/DB
+    # behaviour is unchanged when they are absent. GEMINI_API_KEY is read from
+    # the environment / .env only; it is never logged or serialised.
+    GEMINI_API_KEY: str | None = None
+    # Requested default was "gemini-2.5-flash"; this API key's generateContent
+    # endpoint rejects it ("no longer available to new users") and points to the
+    # current flash line. "gemini-flash-latest" is the stable free-tier alias
+    # that always resolves to the current Flash model. Override with GEMINI_MODEL.
+    GEMINI_MODEL: str = "gemini-flash-latest"
+    GEMINI_MAX_TURNS: int = 4
+    GEMINI_TIMEOUT_SECONDS: float = 20.0
+    # Per-request "thinking" token budget for the agent's Gemini calls. -1 (the
+    # default) means the field is not sent at all, so behaviour is byte-for-byte
+    # unchanged. Set to 0 to DISABLE thinking (much lower per-call latency, at
+    # some cost to reasoning depth); a positive value caps the thinking tokens.
+    GEMINI_THINKING_BUDGET: int = -1
+
+    # Which LLM backend the recovery agent loop + scheduler judgment use.
+    #   "gemini" (default) -> GeminiProvider, GEMINI_* settings above
+    #   "groq"             -> GroqProvider (OpenAI-compatible), GROQ_* below
+    # This is the one-line fallback switch: flip to "gemini" to revert entirely.
+    LLM_PROVIDER: str = "gemini"
+    # Groq (https://console.groq.com) -- OpenAI-compatible, generous free tier,
+    # no billing required. Read from environment / .env only; never logged.
+    GROQ_API_KEY: str | None = None
+    # Picked for tool-calling reliability over raw speed. gpt-oss-120b is the
+    # strongest function-calling model currently served to this key
+    # (GET /openai/v1/models); llama-3.3-70b is no longer offered here.
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    GROQ_BASE_URL: str = "https://api.groq.com/openai/v1"
+    # Provider-neutral turn / timeout knobs. 0 (default) -> fall back to the
+    # GEMINI_* values above, so nothing changes unless these are set explicitly.
+    AGENT_MAX_TURNS: int = 0
+    AGENT_TIMEOUT_SECONDS: float = 0.0
+
+    # --- Razorpay integration (app/integrations/razorpay/) -------------
+    # TEST MODE ONLY in this stage. All optional: when unset, the live
+    # execution path refuses to run and the agent degrades gracefully; the
+    # rules / ML / uplift / dry-run paths are entirely unaffected. Secrets are
+    # read from the environment / .env only and are never logged or serialised.
+    RAZORPAY_KEY_ID: str | None = None
+    RAZORPAY_KEY_SECRET: str | None = None
+    RAZORPAY_WEBHOOK_SECRET: str | None = None
+    RAZORPAY_BASE_URL: str = "https://api.razorpay.com/v1"
+    RAZORPAY_TEST_MODE: bool = True
+    RAZORPAY_TIMEOUT_SECONDS: float = 15.0
+    # Razorpay requires expire_by to be > 15 minutes from now; the adapter
+    # clamps anything smaller up to 16.
+    RAZORPAY_PAYMENT_LINK_EXPIRY_MINUTES: int = 60
+
+    # --- Hinglish voice / text-to-speech (app/services/voice.py) -------
+    # DEMO SCOPE: converts the agent's existing Hinglish customer_message into a
+    # real synthesized audio FILE (retrievable via URL). It does NOT place a
+    # phone call and the customer receives nothing through any channel in this
+    # stage. Off by default; failures fall back to text-only, never crash the
+    # recovery flow.
+    TTS_ENABLED: bool = False
+    # Language code passed to the engine. "hi" = Hindi (used for Hinglish).
+    TTS_LANGUAGE: str = "hi"
+    TTS_OUTPUT_DIR: str = "artifacts/tts"
+    # "pyttsx3" = local OS-native TTS (Windows SAPI5), no network. The only
+    # engine wired in this stage.
+    TTS_ENGINE: str = "pyttsx3"
+
+    # --- Recovery Scheduler (app/services/recovery_scheduler.py) -------
+    # A lightweight, in-process periodic auto-trigger for the recovery agent.
+    # No Celery / Redis / task queue: a single daemon thread that, once per
+    # interval, asks the existing PortfolioAllocator for the ranked "act" set
+    # (capacity = SCHEDULER_MAX_AUTO_RUNS_PER_CYCLE) and then runs the *exact*
+    # existing agent-run code path on each of those events, tagged
+    # ``triggered_by="scheduler"``. OFF by default: when SCHEDULER_ENABLED is
+    # false the timer never starts and behaviour is identical to before this
+    # feature existed.
+    SCHEDULER_ENABLED: bool = False
+    SCHEDULER_INTERVAL_SECONDS: float = 300.0
+    # Hard cap on scheduler-triggered agent runs per cycle. The scheduler can
+    # never exceed this in a cycle even if more eligible events exist.
+    SCHEDULER_MAX_AUTO_RUNS_PER_CYCLE: int = 3
+    # DRY RUN by default: scheduler-triggered runs simulate action execution
+    # and persist no Intervention -- exactly the manual endpoint's default.
+    SCHEDULER_DRY_RUN: bool = True
+    # Scoring policy the PortfolioAllocator uses to rank the batch.
+    SCHEDULER_POLICY: str = "rules"
+    # How many recent cycle records GET /api/v1/scheduler/status keeps.
+    SCHEDULER_CYCLE_HISTORY_SIZE: int = 20
+    # AI cycle judgment (app/services/recovery_scheduler.py): one bounded,
+    # non-tool-calling Gemini call per cycle, immediately before the allocator,
+    # that may only make this cycle MORE cautious -- proceed at full configured
+    # capacity, proceed at reduced capacity (clamped to
+    # SCHEDULER_MAX_AUTO_RUNS_PER_CYCLE), or skip this cycle. OFF by default;
+    # when false the Gemini call is skipped entirely and the cycle runs exactly
+    # as it did before this feature. Any failure/timeout/malformed response
+    # fails safe to proceed-at-full-configured-capacity.
+    SCHEDULER_AI_JUDGMENT_ENABLED: bool = False
+
+    # --- Frontend / browser access (app/main.py CORS) -----------------
+    # Comma-separated list of exact browser origins allowed to call this API.
+    # Read-only dashboard + the single agent-run POST; no cookies, no auth
+    # headers are used, so credentials are NOT allowed on CORS requests. Empty
+    # string disables CORS entirely (unchanged pre-frontend behaviour).
+    CORS_ALLOW_ORIGINS: str = (
+        "http://localhost:5173,http://127.0.0.1:5173,"
+        "http://localhost:4173,http://127.0.0.1:4173"
+    )
+
+    @property
+    def cors_allow_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.CORS_ALLOW_ORIGINS.split(",") if o.strip()]
+
+    if "SettingsConfigDict" in globals() and SettingsConfigDict is not dict:
+        model_config = SettingsConfigDict(
+            env_file=".env",
+            env_file_encoding="utf-8",
+            case_sensitive=True,
+        )
+    else:
+        class Config:
+            env_file = ".env"
+            env_file_encoding = "utf-8"
+            case_sensitive = True
+
+
+settings = Settings()
