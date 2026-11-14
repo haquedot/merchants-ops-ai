@@ -122,17 +122,22 @@ class Settings(BaseSettings):
     def cors_allow_origins_list(self) -> list[str]:
         return [o.strip() for o in self.CORS_ALLOW_ORIGINS.split(",") if o.strip()]
 
+    # --- Sarvam AI ----------------------------------------------------
+    SARVAM_API_KEY: str = ""
+
     if "SettingsConfigDict" in globals() and SettingsConfigDict is not dict:
         model_config = SettingsConfigDict(
             env_file=".env",
             env_file_encoding="utf-8",
             case_sensitive=True,
+            extra="ignore",
         )
     else:
         class Config:
             env_file = ".env"
             env_file_encoding = "utf-8"
             case_sensitive = True
+            extra = "ignore"
 
 
 settings = Settings()
