@@ -42,7 +42,7 @@ from app.agent.schemas import ProviderTurn, ToolCall
 _DEFAULT_BASE = "https://api.groq.com/openai/v1"
 # Groq's edge (Cloudflare) 403s the default ``Python-urllib`` user-agent
 # ("error code: 1010"). A named UA clears it.
-_USER_AGENT = "reclaim-recovery-agent/1.0"
+_USER_AGENT = "paytm-saathi-agent/1.0"
 
 
 class GroqProvider:

@@ -10,7 +10,7 @@ export default function NotFound() {
       <EmptyState
         icon={<Compass size={18} />}
         title="Page not found"
-        description="That route doesn't exist in Reclaim."
+        description="That route doesn't exist in Paytm Saathi."
         action={
           <Link to="/">
             <Button variant="secondary" size="sm">
