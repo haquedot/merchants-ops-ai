@@ -1,9 +1,9 @@
 {
-  "name": "reclaim-frontend",
+  "name": "paytm-merchantops-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Reclaim — AI Revenue Recovery. Dashboard for the Razorpay AI Recovery Orchestrator.",
+  "description": "Paytm MerchantOps AI — Autonomous Merchant Teammate Dashboard.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

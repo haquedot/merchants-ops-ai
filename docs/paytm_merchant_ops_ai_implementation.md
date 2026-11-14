@@ -75,9 +75,9 @@ We are leveraging our proven, production-grade agent foundation (`e:\merchants-o
 | Existing Foundation (`Reclaim`) | Paytm Hackathon Adaptation (`Paytm MerchantOps AI`) |
 |---|---|
 | **FastAPI Backend (`backend/app`)** | Retained as the operational backend with specialized Paytm domain routers (`/api/v1/merchant-ops`, `/api/v1/soundbox`, `/api/v1/tickets`). |
-| **Tool-Calling Agent (`app/agent`)** | Refactored from Razorpay recovery into Paytm Merchant Support Agent with Paytm diagnostic and action tools. |
+| **Tool-Calling Agent (`app/agent`)** | Refactored from single-action recovery into Paytm Merchant Support Agent with Paytm diagnostic and action tools. |
 | **Deterministic Guardrails (`guardrails.py`)** | Repurposed for support safety: prevents unauthorized refunds/credits, enforces daily merchant limits, mandates human escalation. |
-| **Razorpay API Adapter** | Swapped with a high-fidelity **Paytm Mock Subsystems Suite** (Core Ledger, NPCI Bank Switch, Soundbox Device Cloud, Field Ops). |
+| **Payment Gateway Adapter** | Swapped with a high-fidelity **Paytm Mock Subsystems Suite** (Core Ledger, NPCI Bank Switch, Soundbox Device Cloud, Field Ops). |
 | **Portfolio Scarcity Allocator** | Repurposed as **Operations Priority Triage**: ranks incoming merchant issues by business impact (VIP merchant, high volume, prolonged downtime). |
 | **Autonomous Scheduler** | Repurposed as **Proactive Merchant Sentinel**: autonomously detects failing Soundboxes or stuck settlement batches before the merchant even calls. |
 | **React + Vite Frontend (`frontend/`)** | Transformed into the **Paytm Merchant Ops Cockpit**: includes Merchant Simulator, Live Diagnostics, Human Ops Queue, and System Telemetry. |

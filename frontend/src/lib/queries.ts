@@ -29,7 +29,7 @@ import type {
   PortfolioAllocation,
   RecoveryEvent,
   RecoveryEventListItem,
-  RecoveryEventRazorpay,
+  RecoveryEventPaytm,
   RecoveryImpact,
   Subscription,
   UpliftModelInfo,
@@ -161,10 +161,10 @@ export const useRecoveryEvent = (id: number | null) =>
     queryFn: () => api.get<RecoveryEvent>(`/api/v1/recovery-events/${id}`),
     enabled: id != null,
   });
-export const useRecoveryRazorpay = (id: number | null) =>
+export const useRecoveryPaytm = (id: number | null) =>
   useQuery({
-    queryKey: ["recovery-event", id, "razorpay"],
-    queryFn: () => api.get<RecoveryEventRazorpay>(`/api/v1/recovery-events/${id}/razorpay`),
+    queryKey: ["recovery-event", id, "paytm"],
+    queryFn: () => api.get<RecoveryEventPaytm>(`/api/v1/recovery-events/${id}/paytm`),
     enabled: id != null,
   });
 export const usePayment = (id: number | null) =>

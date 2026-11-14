@@ -14,7 +14,7 @@ const STEPS = [
   { label: "Understand", icon: ScanSearch, note: "Why the payment failed" },
   { label: "Predict", icon: TrendingUp, note: "ML + uplift score every action" },
   { label: "Decide", icon: Sparkles, note: "Agent picks the best next step" },
-  { label: "Recover", icon: Zap, note: "Razorpay Payment Link" },
+  { label: "Recover", icon: Zap, note: "Paytm Payment Link" },
   { label: "Verify", icon: ShieldCheck, note: "Signed webhook confirms payment" },
   { label: "Stop", icon: Flag, note: "Agent ends the run" },
 ];

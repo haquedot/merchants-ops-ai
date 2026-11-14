@@ -1,13 +1,10 @@
-"""Razorpay webhook receiver.
+"""Paytm webhook receiver.
 
-    POST /api/v1/webhooks/razorpay
+    POST /api/v1/webhooks/paytm
 
-The raw request body is read byte-for-byte (re-serialising would break the HMAC)
-and handed to :class:`RazorpayWebhookService`, which verifies the signature
-*before* parsing, correlates the event, applies the state change exactly once,
-and is idempotent against duplicate deliveries.
-
-The endpoint never logs the body, the signature, or the webhook secret.
+The raw request body is read byte-for-byte and handed to :class:`PaytmWebhookService`,
+which verifies the signature before parsing, correlates the event, applies the
+state change exactly once, and is idempotent against duplicate deliveries.
 """
 from __future__ import annotations
 
@@ -15,15 +12,15 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.integrations.razorpay import EVENT_ID_HEADER, SIGNATURE_HEADER
-from app.integrations.razorpay.exceptions import RazorpayConfigError
-from app.services.razorpay_webhook import RazorpayWebhookService
+from app.integrations.paytm import EVENT_ID_HEADER, SIGNATURE_HEADER
+from app.integrations.paytm.exceptions import PaytmConfigError
+from app.services.paytm_webhook import PaytmWebhookService
 
 router = APIRouter(prefix="/api/v1/webhooks", tags=["webhooks"])
 
 
-@router.post("/razorpay")
-async def razorpay_webhook(
+@router.post("/paytm")
+async def paytm_webhook(
     request: Request,
     response: Response,
     db: Session = Depends(get_db),
@@ -33,12 +30,11 @@ async def razorpay_webhook(
     event_id = request.headers.get(EVENT_ID_HEADER)
 
     try:
-        service = RazorpayWebhookService(db)
+        service = PaytmWebhookService(db)
         result = service.process(
             raw_body=raw_body, signature=signature, event_id=event_id
         )
-    except RazorpayConfigError:
-        # Secret not configured: tell Razorpay to retry later, don't 500-loop.
+    except PaytmConfigError:
         response.status_code = 503
         return {"status": "webhook_not_configured"}
 

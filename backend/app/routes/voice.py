@@ -2,7 +2,7 @@
 
     GET /api/v1/voice/{audio_id}   -> the audio file (audio/wav)
 
-This mirrors how a Razorpay Payment Link URL is exposed: the recovery agent
+This mirrors how a Paytm Payment Link URL is exposed: the recovery agent
 generates the artifact and returns its URL; this endpoint just serves it.
 
 IMPORTANT: serving this file is NOT a phone call and NOT delivery to a customer.

@@ -54,7 +54,7 @@ export const TOOL_PHASES: Record<string, Phase> = {
   },
   execute_recovery_action: {
     label: "Execute",
-    description: "Run the chosen action — create a Razorpay recovery Payment Link",
+    description: "Run the chosen action — create a Paytm recovery Payment Link",
     kind: "execute",
   },
   observe_recovery_outcome: {

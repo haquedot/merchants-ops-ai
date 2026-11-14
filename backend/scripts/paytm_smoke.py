@@ -1,20 +1,14 @@
-"""Real Razorpay TEST MODE end-to-end smoke test (Section 24).
+"""Real Paytm TEST MODE end-to-end smoke test.
 
-Phases (each guarded, none run without explicit config):
-
+Phases:
   default        create a throwaway open treatment recovery event, run the agent
-                 in dry_run (assert ZERO Razorpay side effects), then run it LIVE
+                 in dry_run (assert ZERO Paytm side effects), then run it LIVE
                  (create ONE real Test Mode Payment Link), print the link + ids,
                  and assert payment_recovered is still FALSE. Leaves the event
                  open for the manual payment + webhook step.
   --observe ID   run observe_recovery_outcome against an existing event and print
-                 the real recovery state (use after paying the link).
-  --cleanup ID   delete the throwaway event and everything under it.
-
-Never prints RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET / RAZORPAY_WEBHOOK_SECRET.
-TEST MODE ONLY -- refuses to run if the key is not an rzp_test_ key.
-
-    .venv/Scripts/python.exe scripts/razorpay_smoke.py
+                 the real recovery state.
+  --cleanup      delete the throwaway event and everything under it.
 """
 from __future__ import annotations
 
@@ -28,7 +22,7 @@ from app.agent.config import AgentConfig
 from app.agent.guardrails import load_event, payment_recovered
 from app.agent.runner import run_recovery_agent
 from app.database import SessionLocal
-from app.integrations.razorpay import RazorpayConfig
+from app.integrations.paytm import PaytmConfig
 from app.models.agent_events import AgentEvent
 from app.models.audit_log import AuditLog
 from app.models.customer import Customer
@@ -38,13 +32,10 @@ from app.models.payment import Payment
 from app.models.recovery_events import RecoveryEvent
 from app.models.subscription import Subscription
 
-TAG = "smoke_razorpay_"
+TAG = "smoke_paytm_"
 
 
 class _ScriptedExecute:
-    """Tiny provider: context -> scores -> execute -> stop. Not a real LLM;
-    used only to drive the live Payment Link creation deterministically."""
-
     model = "smoke-script"
 
     def __init__(self) -> None:
@@ -54,10 +45,10 @@ class _ScriptedExecute:
             ("execute_recovery_action", {
                 "action_type": "whatsapp_nudge",
                 "customer_message": (
-                    "Hi, aapka subscription payment complete nahi ho paaya. "
-                    "Neeche diye secure link se aap ise abhi complete kar sakte hain."
+                    "Namaste, aapka payment complete nahi ho paaya. "
+                    "Neeche diye secure Paytm link se aap ise abhi complete kar sakte hain."
                 ),
-                "reason": "smoke test: create a Razorpay Test Mode payment link",
+                "reason": "smoke test: create a Paytm Test Mode payment link",
             }),
             ("stop_recovery", {
                 "stop_reason": "action_executed_awaiting_outcome",
@@ -130,27 +121,27 @@ def _cleanup(db) -> None:
     db.commit()
 
 
-def _print_razorpay_state(db, event_id: int) -> None:
+def _print_paytm_state(db, event_id: int) -> None:
     ev = load_event(db, event_id)
     print(f"  recovery_event {event_id}: status={ev.status} "
           f"payment_recovered={payment_recovered(ev)} payment_status={ev.payment.status}")
     for i in sorted(ev.interventions, key=lambda x: x.id):
         print(f"  intervention {i.id}: action={i.action_type} "
-              f"link_id={i.razorpay_payment_link_id} "
-              f"short_url={i.razorpay_short_url} "
-              f"razorpay_status={i.last_razorpay_status} "
-              f"payment_id={i.razorpay_payment_id} "
+              f"link_id={i.paytm_payment_link_id} "
+              f"short_url={i.paytm_short_url} "
+              f"paytm_status={i.last_paytm_status} "
+              f"payment_id={i.paytm_payment_id} "
               f"outcome={'recovered' if (i.outcome and i.outcome.payment_recovered) else None}")
 
 
 def cmd_default(real_gemini: bool = True) -> None:
-    cfg = RazorpayConfig.from_settings()
-    print("Razorpay config:", cfg.status())
+    cfg = PaytmConfig.from_settings()
+    print("Paytm config:", cfg.status())
     if not cfg.is_ready:
         sys.exit(
-            "STOP: Razorpay is not configured for a live Test Mode call.\n"
-            "Need RAZORPAY_KEY_ID (rzp_test_...), RAZORPAY_KEY_SECRET, "
-            "RAZORPAY_TEST_MODE=true in .env."
+            "STOP: Paytm is not configured for a live Test Mode call.\n"
+            "Need PAYTM_MID (TEST_...), PAYTM_MERCHANT_KEY, "
+            "PAYTM_TEST_MODE=true in .env."
         )
 
     live_provider = None if real_gemini else _ScriptedExecute()
@@ -167,45 +158,41 @@ def cmd_default(real_gemini: bool = True) -> None:
         print(f"created throwaway open treatment recovery event id={event_id} "
               f"(amount 49900 paise)\n")
 
-        # -- phase 1: DRY RUN safety gate (scripted, deterministic, 0 quota) --
-        print("--- phase 1: DRY RUN safety gate (must make no Razorpay call) ---")
+        print("--- phase 1: DRY RUN safety gate (must make no Paytm call) ---")
         dr = run_recovery_agent(db, event_id, dry_run=True,
                                 provider=_ScriptedExecute(), persist=False)
         ev = load_event(db, event_id)
         assert not ev.interventions, "DRY RUN created an intervention!"
         print(f"  tools={[t.tool for t in dr.tool_trace]}")
-        print("  OK: no intervention, no Razorpay call.\n")
+        print("  OK: no intervention, no Paytm call.\n")
 
-        # -- phase 2: LIVE, agent-driven -- Gemini chooses, ONE real link --
         print("--- phase 2: LIVE (agent-driven; creates ONE real Test Mode link) ---")
         lr = run_recovery_agent(db, event_id, dry_run=False,
                                 provider=live_provider, persist=True)
         print(f"  status={lr.status} turns={lr.turns_used}")
-        print(f"  tools requested (in order): {[t.tool for t in lr.tool_trace]}")
+        print(f"  tools requested: {[t.tool for t in lr.tool_trace]}")
         print(f"  decision={lr.decision} chosen_action={lr.chosen_action}")
         print(f"  reasoning_summary={lr.reasoning_summary}")
         if lr.errors:
             print(f"  errors={lr.errors}")
-        _print_razorpay_state(db, event_id)
+        _print_paytm_state(db, event_id)
 
         ev = load_event(db, event_id)
         assert payment_recovered(ev) is False, "payment marked recovered on link creation!"
         assert not any(i.outcome for i in ev.interventions), "Outcome created on link creation!"
 
-        links = [i for i in ev.interventions if i.razorpay_payment_link_id]
+        links = [i for i in ev.interventions if i.paytm_payment_link_id]
         assert len(links) <= 1, f"more than one payment link created: {len(links)}"
         if not links:
             print("\n  NO Payment Link was created -- Gemini did not execute an action.")
-            print(f"  final status={lr.status}, decision={lr.decision}")
             return
         iv = links[0]
-        print("\n  >>> OPEN THIS LINK AND PAY WITH A RAZORPAY TEST CARD <<<")
-        print(f"  Payment Link URL : {iv.razorpay_short_url}")
-        print(f"  payment_link_id  : {iv.razorpay_payment_link_id}")
-        print(f"  reference_id     : {iv.razorpay_reference_id}")
+        print("\n  >>> OPEN THIS LINK AND PAY WITH A PAYTM TEST WALLET/UPI <<<")
+        print(f"  Payment Link URL : {iv.paytm_short_url}")
+        print(f"  payment_link_id  : {iv.paytm_payment_link_id}")
+        print(f"  reference_id     : {iv.paytm_reference_id}")
         print(f"  recovery_event_id: {event_id}   intervention_id: {iv.id}")
-        print(f"\n  after paying, re-run:  scripts/razorpay_smoke.py --observe {event_id}")
-        print("\n  payment_recovered is FALSE (correct: link created != recovered).")
+        print(f"\n  after paying, re-run:  scripts/paytm_smoke.py --observe {event_id}")
     finally:
         db.close()
 
@@ -223,7 +210,7 @@ def cmd_observe(event_id: int) -> None:
         print(f"tools={[t.tool for t in res.tool_trace]}")
         for t in res.tool_trace:
             print(f"  {t.tool}: {t.result_summary}")
-        _print_razorpay_state(db, event_id)
+        _print_paytm_state(db, event_id)
     finally:
         db.close()
 
@@ -259,8 +246,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--observe", type=int, metavar="RECOVERY_EVENT_ID")
     ap.add_argument("--cleanup", action="store_true")
-    ap.add_argument("--scripted", action="store_true",
-                    help="use the deterministic scripted provider instead of real Gemini")
+    ap.add_argument("--scripted", action="store_true")
     args = ap.parse_args()
     if args.cleanup:
         cmd_cleanup()
@@ -272,3 +258,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

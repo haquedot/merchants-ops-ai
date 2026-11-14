@@ -3,7 +3,7 @@
 WHAT THIS DOES: takes the Hinglish ``customer_message`` the agent already
 produces (in ``execute_recovery_action`` / ``stop_recovery``) and synthesizes it
 into a real audio FILE, stored under ``TTS_OUTPUT_DIR`` and retrievable at
-``GET /api/v1/voice/{audio_id}`` -- mirroring how a Razorpay Payment Link URL is
+``GET /api/v1/voice/{audio_id}`` -- mirroring how a Paytm Payment Link URL is
 generated and returned.
 
 WHAT THIS DOES NOT DO (restated in the API, the tool notes, and the report):

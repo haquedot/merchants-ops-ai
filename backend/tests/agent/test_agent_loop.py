@@ -219,14 +219,14 @@ def test_dry_run_never_executes_action(db_session_agent, fresh_event):
 
 
 def test_live_run_persists_intervention_and_payment_link(db_session_agent, fresh_event):
-    """Live execution now creates an Intervention + a Razorpay Test Mode Payment
+    """Live execution now creates an Intervention + a Paytm Test Mode Payment
     Link (via the real client + fake transport -- no network)."""
     from app.agent.agent import RecoveryAgent
-    from app.integrations.razorpay.client import RazorpayClient
-    from tests.razorpay.fakes import FakeRazorpayTransport, make_config
+    from app.integrations.paytm.client import PaytmClient
+    from tests.paytm.fakes import FakePaytmTransport, make_config
 
-    transport = FakeRazorpayTransport()
-    client = RazorpayClient(make_config(), transport=transport)
+    transport = FakePaytmTransport()
+    client = PaytmClient(make_config(), transport=transport)
     prov = ScriptedProvider([
         ("get_recovery_event_context", {}),
         ("execute_recovery_action", {"action_type": "sms_nudge",
@@ -236,7 +236,7 @@ def test_live_run_persists_intervention_and_payment_link(db_session_agent, fresh
                            "reasoning_summary": "done"}),
     ])
     state = RecoveryAgent(
-        db_session_agent, prov, cfg(), razorpay_client=client
+        db_session_agent, prov, cfg(), paytm_client=client
     ).run(fresh_event, dry_run=False)
 
     assert state.chosen_action == "sms_nudge"
@@ -245,7 +245,7 @@ def test_live_run_persists_intervention_and_payment_link(db_session_agent, fresh
         select(Intervention).where(Intervention.recovery_event_id == fresh_event)
     ).all()
     assert len(ivs) == 1
-    assert ivs[0].razorpay_payment_link_id is not None
+    assert ivs[0].paytm_payment_link_id is not None
     assert ivs[0].outcome is None                       # link != recovery
     for iv in ivs:
         db_session_agent.delete(iv)

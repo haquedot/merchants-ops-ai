@@ -1,4 +1,4 @@
-"""add razorpay correlation fields and processed webhook events table
+"""add paytm correlation fields and processed webhook events table
 
 Revision ID: b2f1a7c9d4e0
 Revises: 361460832735
@@ -6,8 +6,8 @@ Create Date: 2026-09-03
 
 Additive only. Every new column on ``interventions`` is nullable, so existing
 rows and the rules / ML / uplift / dry-run paths are unaffected. The
-``processed_webhook_events`` table exists solely to make Razorpay webhook
-handling idempotent at the database level (its primary key is Razorpay's
+``processed_webhook_events`` table exists solely to make Paytm webhook
+handling idempotent at the database level (its primary key is Paytm's
 event id).
 """
 from typing import Sequence, Union
@@ -25,38 +25,38 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.add_column(
         "interventions",
-        sa.Column("razorpay_reference_id", sa.String(length=120), nullable=True),
+        sa.Column("paytm_reference_id", sa.String(length=120), nullable=True),
     )
     op.add_column(
         "interventions",
-        sa.Column("razorpay_payment_link_id", sa.String(length=64), nullable=True),
+        sa.Column("paytm_payment_link_id", sa.String(length=64), nullable=True),
     )
     op.add_column(
         "interventions",
-        sa.Column("razorpay_short_url", sa.String(length=255), nullable=True),
+        sa.Column("paytm_short_url", sa.String(length=255), nullable=True),
     )
     op.add_column(
         "interventions",
-        sa.Column("razorpay_payment_id", sa.String(length=64), nullable=True),
+        sa.Column("paytm_payment_id", sa.String(length=64), nullable=True),
     )
     op.add_column(
         "interventions",
-        sa.Column("last_razorpay_status", sa.String(length=30), nullable=True),
+        sa.Column("last_paytm_status", sa.String(length=30), nullable=True),
     )
     op.create_unique_constraint(
-        "uq_interventions_razorpay_reference_id",
+        "uq_interventions_paytm_reference_id",
         "interventions",
-        ["razorpay_reference_id"],
+        ["paytm_reference_id"],
     )
     op.create_unique_constraint(
-        "uq_interventions_razorpay_payment_link_id",
+        "uq_interventions_paytm_payment_link_id",
         "interventions",
-        ["razorpay_payment_link_id"],
+        ["paytm_payment_link_id"],
     )
     op.create_index(
-        op.f("ix_interventions_razorpay_payment_link_id"),
+        op.f("ix_interventions_paytm_payment_link_id"),
         "interventions",
-        ["razorpay_payment_link_id"],
+        ["paytm_payment_link_id"],
         unique=False,
     )
 
@@ -95,17 +95,18 @@ def downgrade() -> None:
     )
     op.drop_table("processed_webhook_events")
     op.drop_index(
-        op.f("ix_interventions_razorpay_payment_link_id"),
+        op.f("ix_interventions_paytm_payment_link_id"),
         table_name="interventions",
     )
     op.drop_constraint(
-        "uq_interventions_razorpay_payment_link_id", "interventions", type_="unique"
+        "uq_interventions_paytm_payment_link_id", "interventions", type_="unique"
     )
     op.drop_constraint(
-        "uq_interventions_razorpay_reference_id", "interventions", type_="unique"
+        "uq_interventions_paytm_reference_id", "interventions", type_="unique"
     )
-    op.drop_column("interventions", "last_razorpay_status")
-    op.drop_column("interventions", "razorpay_payment_id")
-    op.drop_column("interventions", "razorpay_short_url")
-    op.drop_column("interventions", "razorpay_payment_link_id")
-    op.drop_column("interventions", "razorpay_reference_id")
+    op.drop_column("interventions", "last_paytm_status")
+    op.drop_column("interventions", "paytm_payment_id")
+    op.drop_column("interventions", "paytm_short_url")
+    op.drop_column("interventions", "paytm_payment_link_id")
+    op.drop_column("interventions", "paytm_reference_id")
+

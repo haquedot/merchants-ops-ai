@@ -1,5 +1,5 @@
 import { ArrowUpRight, Check, CircleDashed, ShieldCheck } from "lucide-react";
-import type { RazorpayInterventionView, RazorpayConfigStatus } from "@/lib/types";
+import type { PaytmInterventionView, PaytmConfigStatus } from "@/lib/types";
 import { Card, CardBody, CardHeader } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { CopyButton } from "../ui/CopyButton";
@@ -8,20 +8,20 @@ import { cn } from "@/lib/cn";
 
 const FLOW = ["Link created", "Awaiting payment", "Payment confirmed", "Recovered"];
 
-function flowIndex(iv: RazorpayInterventionView): number {
+function flowIndex(iv: PaytmInterventionView): number {
   if (iv.outcome_payment_recovered) return 3;
   if (iv.payment_link_paid) return 2;
   if (iv.payment_link_created) return 1;
   return 0;
 }
 
-export function RazorpayCard({
+export function PaytmCard({
   interventions,
   config,
   amountPaise,
 }: {
-  interventions: RazorpayInterventionView[];
-  config: RazorpayConfigStatus;
+  interventions: PaytmInterventionView[];
+  config: PaytmConfigStatus;
   amountPaise: number;
 }) {
   const linked = interventions.filter((iv) => iv.payment_link_created);
@@ -31,7 +31,7 @@ export function RazorpayCard({
     <Card>
       <CardHeader
         eyebrow="Payment infrastructure"
-        title="Razorpay recovery"
+        title="Paytm recovery"
         action={
           config.test_mode ? (
             <Badge tone="accent" dot>
@@ -96,7 +96,7 @@ export function RazorpayCard({
                     recovered
                   </p>
                   <p className="text-2xs text-ink-muted">
-                    Payment confirmed by a signature-verified Razorpay webhook.
+                    Payment confirmed by a signature-verified Paytm webhook.
                   </p>
                 </div>
               </div>
@@ -107,7 +107,7 @@ export function RazorpayCard({
                 </span>
                 <div>
                   <p className="text-[13px] font-semibold text-ink">
-                    Payment Link created — not yet paid
+                    Paytm Payment Link created — not yet paid
                   </p>
                   <p className="text-2xs text-ink-muted">
                     Recovery stays <span className="font-medium">unconfirmed</span> until a
@@ -122,7 +122,7 @@ export function RazorpayCard({
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
               <Detail label="Action">{actionLabel(primary.action_type)}</Detail>
               <Detail label="Link status">
-                <span className="capitalize">{primary.last_razorpay_status ?? "—"}</span>
+                <span className="capitalize">{primary.last_paytm_status ?? "—"}</span>
               </Detail>
               <Detail label="Amount">{rupeesFromPaise(amountPaise, true)}</Detail>
               <Detail label="Amount paid">
@@ -133,20 +133,20 @@ export function RazorpayCard({
               <Detail label="Payment Link ID">
                 <span className="inline-flex items-center gap-1.5">
                   <span className="font-mono text-[12px]">
-                    {truncateId(primary.razorpay_payment_link_id)}
+                    {truncateId(primary.paytm_payment_link_id)}
                   </span>
-                  {primary.razorpay_payment_link_id ? (
-                    <CopyButton value={primary.razorpay_payment_link_id} label="" />
+                  {primary.paytm_payment_link_id ? (
+                    <CopyButton value={primary.paytm_payment_link_id} label="" />
                   ) : null}
                 </span>
               </Detail>
-              <Detail label="Razorpay Payment ID">
-                {primary.razorpay_payment_id ? (
+              <Detail label="Paytm Payment ID">
+                {primary.paytm_payment_id ? (
                   <span className="inline-flex items-center gap-1.5">
                     <span className="font-mono text-[12px]">
-                      {truncateId(primary.razorpay_payment_id)}
+                      {truncateId(primary.paytm_payment_id)}
                     </span>
-                    <CopyButton value={primary.razorpay_payment_id} label="" />
+                    <CopyButton value={primary.paytm_payment_id} label="" />
                   </span>
                 ) : (
                   <span className="text-ink-faint">—</span>
@@ -154,19 +154,19 @@ export function RazorpayCard({
               </Detail>
               <Detail label="Reference ID" full>
                 <span className="font-mono text-[12px] text-ink-muted">
-                  {primary.razorpay_reference_id ?? "—"}
+                  {primary.paytm_reference_id ?? "—"}
                 </span>
               </Detail>
             </dl>
 
-            {primary.razorpay_short_url ? (
+            {primary.paytm_short_url ? (
               <a
-                href={primary.razorpay_short_url}
+                href={primary.paytm_short_url}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:underline"
               >
-                Open Payment Link
+                Open Paytm Payment Link
                 <ArrowUpRight size={14} />
               </a>
             ) : null}
@@ -174,8 +174,8 @@ export function RazorpayCard({
         ) : (
           <div className="rounded-control border border-line/[.08] bg-surface-2 p-4 text-[13px] text-ink-muted">
             This recovery ran a direct intervention —{" "}
-            <span className="font-medium text-ink">no Razorpay Payment Link</span> was
-            created for it. The Razorpay execution path is exercised by the verified
+            <span className="font-medium text-ink">no Paytm Payment Link</span> was
+            created for it. The Paytm execution path is exercised by the verified
             recovery and the live agent run.
           </div>
         )}
@@ -205,3 +205,4 @@ function Detail({
     </div>
   );
 }
+

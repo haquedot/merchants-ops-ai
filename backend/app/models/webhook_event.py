@@ -7,9 +7,9 @@ from app.database import Base
 
 
 class ProcessedWebhookEvent(Base):
-    """One row per Razorpay webhook delivery we have fully processed.
+    """One row per Paytm webhook delivery we have fully processed.
 
-    ``event_id`` is Razorpay's ``X-Razorpay-Event-Id`` header. Its primary-key
+    ``event_id`` is Paytm's ``x-paytm-event-id`` header. Its primary-key
     role is what makes webhook handling idempotent: a duplicate delivery hits a
     ``PRIMARY KEY`` violation and is acknowledged without re-applying any state
     change. Delivery with no event id falls back to a synthetic key derived

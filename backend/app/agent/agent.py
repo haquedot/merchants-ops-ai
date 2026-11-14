@@ -56,13 +56,13 @@ class RecoveryAgent:
         provider: LLMProvider,
         config: AgentConfig | None = None,
         *,
-        razorpay_client: Any = None,
+        paytm_client: Any = None,
         voice_service: Any = None,
     ) -> None:
         self.db = db
         self.provider = provider
         self.config = config or AgentConfig.from_settings()
-        self.razorpay_client = razorpay_client
+        self.paytm_client = paytm_client
         if voice_service is None:
             from app.services.voice import VoiceService
 
@@ -220,7 +220,7 @@ class RecoveryAgent:
         # 3. execute
         ctx = ToolContext(
             db=self.db, state=state, dry_run=state.dry_run,
-            razorpay_client=self.razorpay_client,
+            paytm_client=self.paytm_client,
             voice_service=self.voice_service,
         )
         try:

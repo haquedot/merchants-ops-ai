@@ -1,4 +1,4 @@
-"""Razorpay AI Recovery Orchestrator -- ML layer.
+"""Paytm MerchantOps AI -- ML layer.
 
 Production-oriented pipeline that predicts, for a specific failed payment and a
 specific recovery action:

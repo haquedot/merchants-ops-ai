@@ -1,28 +1,21 @@
-"""Test doubles for the Razorpay integration -- no network, ever.
-
-* :class:`FakeRazorpayTransport` plugs into the *real* ``RazorpayClient`` via its
-  ``transport=`` hook, so auth-header construction, retry logic and response
-  parsing are all exercised for real; only the socket is replaced.
-* :func:`signed_webhook` builds a body + a real HMAC-SHA256 signature so the
-  webhook signature path is exercised with real crypto.
-"""
+"""Test doubles for Paytm integration."""
 from __future__ import annotations
 
 import json
 from typing import Any
 
-from app.integrations.razorpay.config import RazorpayConfig
-from app.integrations.razorpay.webhooks import compute_signature
+from app.integrations.paytm.config import PaytmConfig
+from app.integrations.paytm.webhooks import compute_signature
 
-TEST_WEBHOOK_SECRET = "whsec_test_only_not_real"
+TEST_WEBHOOK_SECRET = "whsec_paytm_test_only_not_real"
 
 
-def make_config(**overrides: Any) -> RazorpayConfig:
+def make_config(**overrides: Any) -> PaytmConfig:
     base = dict(
-        key_id="rzp_test_fake0000000000",
-        key_secret="fake_secret_value_not_real",
+        mid="TEST_MERCHANT_FAKE01",
+        merchant_key="fake_key_not_real",
         webhook_secret=TEST_WEBHOOK_SECRET,
-        base_url="https://api.razorpay.com/v1",
+        base_url="https://securegw-stage.paytm.in",
         test_mode=True,
         timeout_seconds=5.0,
         payment_link_expiry_minutes=60,
@@ -32,15 +25,15 @@ def make_config(**overrides: Any) -> RazorpayConfig:
         backoff_max_seconds=0.0,
     )
     base.update(overrides)
-    return RazorpayConfig(**base)
+    return PaytmConfig(**base)
 
 
-class FakeRazorpayTransport:
-    """Callable matching ``RazorpayClient`` transport signature."""
+class FakePaytmTransport:
+    """Callable matching PaytmClient transport signature."""
 
     def __init__(self) -> None:
         self.calls: list[dict[str, Any]] = []
-        self.responses: list[Any] = []  # queue of (status, headers, bytes) | Exception
+        self.responses: list[Any] = []
         self.auto = True
         self._n = 0
         self.created_links: list[dict[str, Any]] = []
@@ -71,23 +64,21 @@ class FakeRazorpayTransport:
             return item
 
         if not self.auto:
-            return (500, {}, b'{"error":{"code":"SERVER","description":"no canned response"}}')
+            return (500, {}, b'{"error":"no canned response"}')
 
         if method == "POST" and url.endswith("/payment_links"):
             self._n += 1
             resp = {
-                "id": f"plink_TEST{self._n:04d}",
-                "entity": "payment_link",
+                "id": f"ptm_link_TEST{self._n:04d}",
                 "status": "created",
                 "amount": parsed_body["amount"],
                 "amount_paid": 0,
                 "currency": parsed_body.get("currency", "INR"),
                 "reference_id": parsed_body["reference_id"],
-                "short_url": f"https://rzp.io/i/TEST{self._n:04d}",
-                "notes": parsed_body.get("notes", {}),
+                "short_url": f"https://paytm.me/TEST{self._n:04d}",
             }
             self.created_links.append(resp)
-            return (200, {"X-Razorpay-Request-Id": "req_testfake"},
+            return (200, {"X-Paytm-Request-Id": "req_testfake"},
                     json.dumps(resp).encode())
 
         if method == "GET" and "/payment_links/" in url:
@@ -96,14 +87,11 @@ class FakeRazorpayTransport:
             body_out = existing or {
                 "id": plid, "status": "created", "amount": 50000,
                 "amount_paid": 0, "currency": "INR",
-                "short_url": "https://rzp.io/i/x",
+                "short_url": "https://paytm.me/x",
             }
             return (200, {}, json.dumps(body_out).encode())
 
-        if method == "GET" and "payment_links?" in url:
-            return (200, {}, json.dumps({"payment_links": []}).encode())
-
-        return (404, {}, b'{"error":{"code":"NOT_FOUND","description":"unknown"}}')
+        return (404, {}, b'{"error":"unknown"}')
 
 
 def payment_link_paid_event(
@@ -111,15 +99,12 @@ def payment_link_paid_event(
     payment_link_id: str,
     reference_id: str,
     amount: int,
-    payment_id: str = "pay_TESTpaid0001",
+    payment_id: str = "ptm_pay_TESTpaid0001",
     event: str = "payment_link.paid",
     status: str = "paid",
 ) -> dict[str, Any]:
     return {
-        "entity": "event",
-        "account_id": "acc_TESTfake",
         "event": event,
-        "contains": ["payment_link", "payment"],
         "payload": {
             "payment_link": {
                 "entity": {
@@ -147,6 +132,6 @@ def payment_link_paid_event(
 def signed_webhook(
     body: dict[str, Any], secret: str = TEST_WEBHOOK_SECRET
 ) -> tuple[bytes, str]:
-    """Return ``(raw_body_bytes, signature_hex)`` for a webhook body."""
     raw = json.dumps(body).encode("utf-8")
     return raw, compute_signature(raw, secret)
+

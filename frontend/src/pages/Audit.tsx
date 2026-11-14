@@ -9,7 +9,7 @@ import { EmptyState, ErrorState } from "@/components/ui/States";
 import {
   useAuditLogList,
   useEventAgentRun,
-  useRecoveryRazorpay,
+  useRecoveryPaytm,
   useAgentEventList,
 } from "@/lib/queries";
 import { EvidenceTrail } from "@/components/recovery/EvidenceTrail";
@@ -26,7 +26,7 @@ export default function Audit() {
   const [page, setPage] = useState(0);
 
   const verifiedRun = useEventAgentRun(VERIFIED_RECOVERY_EVENT_ID);
-  const verifiedRzp = useRecoveryRazorpay(VERIFIED_RECOVERY_EVENT_ID);
+  const verifiedRzp = useRecoveryPaytm(VERIFIED_RECOVERY_EVENT_ID);
   const agentEvents = useAgentEventList();
 
   const actors = useMemo(
@@ -67,7 +67,7 @@ export default function Audit() {
           title={
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={15} className="text-success" />
-              Recovery #{VERIFIED_RECOVERY_EVENT_ID} — Razorpay Test Mode, end to end
+              Recovery #{VERIFIED_RECOVERY_EVENT_ID} — Paytm Test Mode, end to end
             </span>
           }
           action={
@@ -83,7 +83,7 @@ export default function Audit() {
           {verifiedRun.isLoading || verifiedRzp.isLoading ? (
             <Skeleton className="h-40 w-full" />
           ) : (
-            <EvidenceTrail agentEvents={verifiedEvents} razorpay={verifiedRzp.data} />
+            <EvidenceTrail agentEvents={verifiedEvents} paytm={verifiedRzp.data} />
           )}
         </CardBody>
       </Card>

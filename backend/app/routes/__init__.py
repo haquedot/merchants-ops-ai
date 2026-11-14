@@ -13,7 +13,7 @@ from app.routes.ml import router as ml_router
 from app.routes.uplift import router as uplift_router
 from app.routes.agent import router as agent_router
 from app.routes.webhooks import router as webhooks_router
-from app.routes.razorpay_inspect import router as razorpay_inspect_router
+from app.routes.paytm_inspect import router as paytm_inspect_router
 from app.routes.voice import router as voice_router
 from app.routes.scheduler import router as scheduler_router
 
@@ -33,7 +33,7 @@ __all__ = [
     "uplift_router",
     "agent_router",
     "webhooks_router",
-    "razorpay_inspect_router",
+    "paytm_inspect_router",
     "voice_router",
     "scheduler_router",
 ]
