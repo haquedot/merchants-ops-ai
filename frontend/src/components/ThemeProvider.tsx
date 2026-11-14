@@ -7,7 +7,7 @@ interface ThemeCtx {
 }
 const Ctx = createContext<ThemeCtx>({ theme: "dark", toggle: () => {} });
 
-const KEY = "reclaim-theme";
+const KEY = "paytm-saathi-theme";
 
 function initial(): Theme {
   try {
@@ -16,7 +16,7 @@ function initial(): Theme {
   } catch {
     /* private mode / disabled storage */
   }
-  return "dark";
+  return "light";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

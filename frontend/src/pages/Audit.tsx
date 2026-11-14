@@ -54,28 +54,27 @@ export default function Audit() {
   return (
     <Page>
       <PageHeader
-        eyebrow="Trust"
-        title="Audit trail"
+        eyebrow="Trust & Compliance"
+        title="Audit Trail"
         description="Every decision, execution and recovery is a persisted record. No secrets, no raw payloads, no model chain-of-thought are ever stored."
       />
 
-      {/* verified recovery evidence spotlight — the one story that matters,
-          framed apart from the raw system log beneath it */}
-      <Card className="mb-8 border-success/25 bg-gradient-to-br from-success/[.06] via-transparent to-transparent">
+      {/* Verified Recovery Spotlight */}
+      <Card className="mb-8 border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 via-white to-white shadow-xs">
         <CardHeader
-          eyebrow="The one recovery proven end to end"
+          eyebrow="Verified Operations Story"
           title={
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck size={15} className="text-success" />
-              Recovery #{VERIFIED_RECOVERY_EVENT_ID} — Paytm Test Mode, end to end
+            <span className="inline-flex items-center gap-2 text-emerald-800">
+              <ShieldCheck size={16} className="text-emerald-600" />
+              Recovery #{VERIFIED_RECOVERY_EVENT_ID} — Paytm Test Mode, End to End
             </span>
           }
           action={
             <Link
               to={`/recoveries/${VERIFIED_RECOVERY_EVENT_ID}`}
-              className="inline-flex items-center gap-1 text-2xs font-medium text-ink-muted hover:text-ink"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-paytm-cyan hover:underline"
             >
-              Open case file <ArrowRight size={12} />
+              Open case file <ArrowRight size={13} />
             </Link>
           }
         />
@@ -88,15 +87,15 @@ export default function Audit() {
         </CardBody>
       </Card>
 
-      {/* system-wide activity */}
-      <h2 className="mb-3 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
-        <span className="h-3.5 w-0.5 rounded-full bg-accent/60" aria-hidden />
-        Then everything else — the full system log
+      {/* System-wide activity */}
+      <h2 className="mb-3 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+        <span className="h-3.5 w-0.5 rounded-full bg-paytm-cyan/60" aria-hidden />
+        System Log & Agent Telemetry
       </h2>
       <Card className="overflow-hidden">
         <CardHeader
           eyebrow="System"
-          title="Activity log"
+          title="Activity Log"
           action={
             <div className="flex items-center gap-2">
               <input
@@ -107,7 +106,7 @@ export default function Audit() {
                 }}
                 placeholder="Filter actions…"
                 aria-label="Filter audit actions"
-                className="h-8 w-40 rounded-control bg-surface-2 px-2.5 text-[13px] text-ink outline-none ring-1 ring-inset ring-line/[.1] placeholder:text-ink-faint focus:ring-accent"
+                className="h-8 w-44 rounded-xl border border-slate-200 bg-slate-50/50 px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400 focus:border-paytm-cyan focus:bg-white focus:ring-2 focus:ring-paytm-cyan/20"
               />
               <select
                 value={actor}
@@ -116,7 +115,7 @@ export default function Audit() {
                   setPage(0);
                 }}
                 aria-label="Filter by actor"
-                className="h-8 rounded-control bg-surface-2 px-2 text-[13px] text-ink outline-none ring-1 ring-inset ring-line/[.1] focus:ring-accent"
+                className="h-8 rounded-xl border border-slate-200 bg-white px-3 text-[13px] text-slate-700 outline-none focus:border-paytm-cyan focus:ring-2 focus:ring-paytm-cyan/20"
               >
                 <option value="all">Any actor</option>
                 {actors.map((a) => (
@@ -146,11 +145,11 @@ export default function Audit() {
               description="Adjust the filter or actor."
             />
           ) : (
-            <ul className="divide-y divide-line/[.05]">
+            <ul className="divide-y divide-slate-100">
               {rows.map((row) => (
                 <li
                   key={row.id}
-                  className="grid grid-cols-[110px_1fr_auto] items-center gap-3 px-5 py-2.5 text-[13px]"
+                  className="grid grid-cols-[120px_1fr_auto] items-center gap-3 px-5 py-2.5 text-[13px] hover:bg-slate-50/60 transition-colors"
                 >
                   <Badge
                     tone={
@@ -167,13 +166,13 @@ export default function Audit() {
                     className={cn(
                       "min-w-0 truncate",
                       row.actor.includes("webhook") || row.actor.includes("execution")
-                        ? "font-medium text-ink"
-                        : "text-ink-muted",
+                        ? "font-medium text-slate-800"
+                        : "text-slate-600",
                     )}
                   >
                     {row.action.replace(/_/g, " ")}
                   </span>
-                  <span className="shrink-0 font-mono text-2xs text-ink-faint tnum">
+                  <span className="shrink-0 font-mono text-[11px] text-slate-400 tnum">
                     {dateTime(row.created_at)}
                   </span>
                 </li>
@@ -184,24 +183,24 @@ export default function Audit() {
       </Card>
 
       {!logs.isLoading && filtered.length > PAGE ? (
-        <div className="mt-4 flex items-center justify-between text-[13px] text-ink-muted">
+        <div className="mt-4 flex items-center justify-between text-[13px] text-slate-500">
           <span className="tnum">
             {clamped * PAGE + 1}–{Math.min((clamped + 1) * PAGE, filtered.length)} of{" "}
             {num(filtered.length)}
           </span>
-          <div className="flex items-center gap-2 font-mono text-2xs">
+          <div className="flex items-center gap-2 font-mono text-xs">
             <button
-              className="link-quiet disabled:opacity-40"
+              className="text-slate-500 hover:text-slate-800 disabled:opacity-40"
               disabled={clamped === 0}
               onClick={() => setPage((p) => p - 1)}
             >
               ← Prev
             </button>
-            <span className="text-ink-faint">
+            <span className="text-slate-400">
               {clamped + 1} / {pageCount}
             </span>
             <button
-              className="link-quiet disabled:opacity-40"
+              className="text-slate-500 hover:text-slate-800 disabled:opacity-40"
               disabled={clamped >= pageCount - 1}
               onClick={() => setPage((p) => p + 1)}
             >

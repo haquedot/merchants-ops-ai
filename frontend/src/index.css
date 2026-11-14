@@ -3,77 +3,69 @@
 @tailwind utilities;
 
 /* ============================================================================
-   RECLAIM — design tokens
-   One product, one palette. Colour communicates STATE, never decoration.
-   Dark is the default (AI-observability posture); light is a faithful mirror.
-   Values are space-separated RGB channels so Tailwind's `<alpha-value>` works.
+   PAYTM SAATHI — Design Tokens
+   Paytm Cyan (#00BAF2), Paytm Navy (#002970), Clean White & Slate.
+   Default is light mode. Values are space-separated RGB channels for Tailwind.
    ========================================================================== */
 :root,
+.theme-light {
+  --bg: 246 248 252; /* #F6F8FC */
+  --surface: 255 255 255; /* #FFFFFF */
+  --surface-2: 241 245 249; /* #F1F5F9 */
+  --surface-3: 226 232 240; /* #E2E8F0 */
+  --line: 226 232 240;
+  --line-strong: 203 213 225;
+  --ink: 23 32 51; /* #172033 */
+  --ink-muted: 100 116 139; /* #64748B */
+  --ink-faint: 148 163 184; /* #94A3B8 */
+
+  --accent: 0 186 242; /* #00BAF2 - Paytm Cyan */
+  --accent-soft: 229 244 252; /* #E5F4FC */
+  --navy: 0 41 112; /* #002970 - Paytm Navy */
+  --success: 22 163 74; /* #16A34A */
+  --success-soft: 220 252 231;
+  --warning: 245 158 11; /* #F59E0B */
+  --warning-soft: 254 243 199;
+  --danger: 220 38 38; /* #DC2626 */
+  --danger-soft: 254 226 226;
+
+  --line-alpha: 0.8;
+  --line-strong-alpha: 1;
+  --soft-alpha: 0.1;
+  --panel-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(0, 41, 112, 0.04);
+  --hero-shadow: 0 2px 6px 0 rgba(0, 41, 112, 0.06), 0 20px 40px -15px rgba(0, 186, 242, 0.15);
+  color-scheme: light;
+}
+
 .theme-dark {
   --bg: 8 9 11;
-  /* Wider luminance steps between layers so panels read as elevated, not
-     outlined. A black drop-shadow can't register on a near-black page, so
-     depth here is carried by surface contrast + a top edge-highlight. */
   --surface: 19 21 26;
   --surface-2: 27 30 37;
   --surface-3: 36 40 49;
-  --line: 255 255 255; /* used at low alpha */
+  --line: 255 255 255;
   --line-strong: 255 255 255;
   --ink: 237 239 243;
   --ink-muted: 156 162 174;
   --ink-faint: 112 118 130;
 
-  --accent: 124 140 255;
-  --accent-soft: 124 140 255;
-  --success: 52 211 153;
-  --success-soft: 52 211 153;
-  --warning: 251 191 36;
-  --warning-soft: 251 191 36;
-  --danger: 251 113 133;
-  --danger-soft: 251 113 133;
+  --accent: 0 186 242;
+  --accent-soft: 0 186 242;
+  --navy: 0 41 112;
+  --success: 34 197 94;
+  --success-soft: 34 197 94;
+  --warning: 245 158 11;
+  --warning-soft: 245 158 11;
+  --danger: 239 68 68;
+  --danger-soft: 239 68 68;
 
   --line-alpha: 0.09;
   --line-strong-alpha: 0.16;
   --soft-alpha: 0.12;
-  /* One theme-aware elevation: a crisp top edge-highlight (light catching the
-     panel lip) over a deeper ambient shadow. This is what makes a dark panel
-     sit above the page. */
   --panel-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.05),
     0 1px 2px 0 rgb(0 0 0 / 0.4), 0 16px 40px -18px rgb(0 0 0 / 0.6);
   --hero-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.06),
     0 2px 6px 0 rgb(0 0 0 / 0.4), 0 28px 60px -22px rgb(var(--accent) / 0.3);
   color-scheme: dark;
-}
-
-.theme-light {
-  /* A hair off pure white so the white cards lift off the page. */
-  --bg: 246 246 244;
-  --surface: 255 255 255;
-  --surface-2: 244 244 242;
-  --surface-3: 236 236 233;
-  --line: 15 20 30;
-  --line-strong: 15 20 30;
-  --ink: 22 26 34;
-  --ink-muted: 88 95 108;
-  --ink-faint: 132 138 150;
-
-  --accent: 79 70 229;
-  --accent-soft: 99 102 241;
-  --success: 5 150 105;
-  --success-soft: 16 185 129;
-  --warning: 217 119 6;
-  --warning-soft: 245 158 11;
-  --danger: 225 29 72;
-  --danger-soft: 244 63 94;
-
-  --line-alpha: 0.1;
-  --line-strong-alpha: 0.18;
-  --soft-alpha: 0.1;
-  --panel-shadow: 0 1px 2px 0 rgb(15 20 30 / 0.05),
-    0 12px 32px -14px rgb(15 20 30 / 0.14);
-  --hero-shadow: 0 1px 3px 0 rgb(15 20 30 / 0.06),
-    0 24px 52px -20px rgb(var(--accent) / 0.22);
-  color-scheme: light;
 }
 
 @layer base {

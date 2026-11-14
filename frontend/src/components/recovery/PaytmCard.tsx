@@ -43,7 +43,7 @@ export function PaytmCard({
       <CardBody className="space-y-4">
         {primary ? (
           <>
-            {/* state flow */}
+            {/* State Flow */}
             <div className="flex items-center gap-1.5">
               {FLOW.map((label, i) => {
                 const active = i <= flowIndex(primary);
@@ -56,9 +56,9 @@ export function PaytmCard({
                           "grid size-5 shrink-0 place-items-center rounded-full text-[10px] ring-1 ring-inset transition-colors",
                           active
                             ? isRecovered
-                              ? "bg-success/15 text-success ring-success/40"
-                              : "bg-accent/12 text-accent ring-accent/35"
-                            : "bg-surface-3 text-ink-faint ring-line/[.1]",
+                              ? "bg-emerald-50 text-emerald-600 ring-emerald-200/60"
+                              : "bg-sky-50 text-paytm-cyan ring-sky-200/60"
+                            : "bg-slate-100 text-slate-400 ring-slate-200/60"
                         )}
                       >
                         {active ? <Check size={11} strokeWidth={3} /> : i + 1}
@@ -67,7 +67,7 @@ export function PaytmCard({
                         <span
                           className={cn(
                             "h-px flex-1",
-                            i < flowIndex(primary) ? "bg-accent/40" : "bg-line/[.1]",
+                            i < flowIndex(primary) ? "bg-paytm-cyan/40" : "bg-slate-200"
                           )}
                         />
                       ) : null}
@@ -75,7 +75,7 @@ export function PaytmCard({
                     <span
                       className={cn(
                         "text-center text-[10px] leading-tight",
-                        active ? "text-ink-muted" : "text-ink-faint",
+                        active ? "text-slate-600" : "text-slate-400"
                       )}
                     >
                       {label}
@@ -86,30 +86,30 @@ export function PaytmCard({
             </div>
 
             {primary.outcome_payment_recovered ? (
-              <div className="flex animate-fade-up items-center gap-3 rounded-control border border-success/25 bg-success/[.07] p-3.5">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-success/15 text-success">
+              <div className="flex animate-fade-up items-center gap-3 rounded-xl border border-emerald-200/60 bg-emerald-50/60 p-3.5">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
                   <ShieldCheck size={18} />
                 </span>
                 <div>
-                  <p className="text-[15px] font-semibold text-ink tnum">
+                  <p className="text-[15px] font-semibold text-slate-900 tnum">
                     {rupeesFromPaise(primary.recovered_amount_paise ?? amountPaise, true)}{" "}
                     recovered
                   </p>
-                  <p className="text-2xs text-ink-muted">
+                  <p className="text-xs text-slate-500">
                     Payment confirmed by a signature-verified Paytm webhook.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3 rounded-control border border-line/[.08] bg-surface-2 p-3.5">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-3 text-ink-faint">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3.5">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-400">
                   <CircleDashed size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-semibold text-ink">
+                  <p className="text-[13px] font-semibold text-slate-900">
                     Paytm Payment Link created — not yet paid
                   </p>
-                  <p className="text-2xs text-ink-muted">
+                  <p className="text-xs text-slate-500">
                     Recovery stays <span className="font-medium">unconfirmed</span> until a
                     verified <code className="font-mono">payment_link.paid</code> webhook
                     arrives.
@@ -118,7 +118,7 @@ export function PaytmCard({
               </div>
             )}
 
-            {/* details grid */}
+            {/* Details Grid */}
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
               <Detail label="Action">{actionLabel(primary.action_type)}</Detail>
               <Detail label="Link status">
@@ -149,11 +149,11 @@ export function PaytmCard({
                     <CopyButton value={primary.paytm_payment_id} label="" />
                   </span>
                 ) : (
-                  <span className="text-ink-faint">—</span>
+                  <span className="text-slate-400">—</span>
                 )}
               </Detail>
               <Detail label="Reference ID" full>
-                <span className="font-mono text-[12px] text-ink-muted">
+                <span className="font-mono text-[12px] text-slate-500">
                   {primary.paytm_reference_id ?? "—"}
                 </span>
               </Detail>
@@ -164,7 +164,7 @@ export function PaytmCard({
                 href={primary.paytm_short_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:underline"
+                className="inline-flex items-center gap-1.5 text-[13px] font-medium text-paytm-cyan hover:underline"
               >
                 Open Paytm Payment Link
                 <ArrowUpRight size={14} />
@@ -172,15 +172,15 @@ export function PaytmCard({
             ) : null}
           </>
         ) : (
-          <div className="rounded-control border border-line/[.08] bg-surface-2 p-4 text-[13px] text-ink-muted">
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50 p-4 text-[13px] text-slate-500">
             This recovery ran a direct intervention —{" "}
-            <span className="font-medium text-ink">no Paytm Payment Link</span> was
+            <span className="font-medium text-slate-800">no Paytm Payment Link</span> was
             created for it. The Paytm execution path is exercised by the verified
             recovery and the live agent run.
           </div>
         )}
 
-        <p className="border-t border-line/[.07] pt-3 text-2xs leading-relaxed text-ink-faint">
+        <p className="border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400">
           Test Mode only. Amount and currency come from the authoritative payment
           record, never from the model. No API keys or webhook secrets are exposed.
         </p>
@@ -200,9 +200,10 @@ function Detail({
 }) {
   return (
     <div className={full ? "col-span-2" : undefined}>
-      <dt className="label-caps mb-0.5">{label}</dt>
-      <dd className="text-ink">{children}</dd>
+      <dt className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+        {label}
+      </dt>
+      <dd className="text-slate-800">{children}</dd>
     </div>
   );
 }
-

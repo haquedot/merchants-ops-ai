@@ -9,6 +9,7 @@ const Recoveries = lazy(() => import("./pages/Recoveries"));
 const RecoveryDetail = lazy(() => import("./pages/RecoveryDetail"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Experiments = lazy(() => import("./pages/Experiments"));
+const Devices = lazy(() => import("./pages/Devices"));
 const Audit = lazy(() => import("./pages/Audit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -29,7 +30,9 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/recoveries" element={<Recoveries />} />
+            <Route path="/cases" element={<Recoveries />} />
             <Route path="/recoveries/:id" element={<RecoveryDetail />} />
+            <Route path="/devices" element={<Devices />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/experiments" element={<Experiments />} />
             <Route path="/audit" element={<Audit />} />

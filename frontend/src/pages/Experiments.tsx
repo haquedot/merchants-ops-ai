@@ -17,7 +17,7 @@ export default function Experiments() {
     <Page>
       <PageHeader
         eyebrow="Experimentation"
-        title="Experiments"
+        title="A/B Experiments"
         description="Each experiment holds out a randomised control arm so the lift attributed to an intervention is causal, not selection bias."
       />
 
@@ -37,10 +37,10 @@ export default function Experiments() {
           }
           const [lead, ...rest] = named;
           return (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <ExperimentCard exp={lead} meta={list.data?.find((x) => x.id === lead.experiment_id)} lead />
               {rest.length > 0 ? (
-                <div className="grid gap-3 lg:grid-cols-2">
+                <div className="grid gap-4 lg:grid-cols-2">
                   {rest.map((exp) => (
                     <ExperimentCard
                       key={exp.experiment_id}
@@ -72,7 +72,7 @@ function ExperimentCard({
   const maxRate = Math.max(...exp.variants.map((v) => v.recovery_rate), 0.01);
 
   return (
-    <Card className={lead ? "border-accent/20" : undefined}>
+    <Card className={lead ? "border-sky-200/80 shadow-xs" : undefined}>
       <CardHeader
         eyebrow={`Experiment ${exp.experiment_id}`}
         title={exp.experiment_name ?? "Untitled experiment"}
@@ -91,13 +91,15 @@ function ExperimentCard({
       />
       <CardBody className="space-y-4">
         {lead && exp.absolute_lift != null ? (
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-control bg-accent/[.07] px-4 py-3 ring-1 ring-inset ring-accent/20">
-            <span className="font-mono text-2xl font-bold text-success tnum">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl bg-sky-50/70 px-4 py-3 border border-sky-100">
+            <span className="font-mono text-2xl font-bold text-emerald-600 tnum">
               {pp(exp.absolute_lift)}
             </span>
-            <span className="label-caps">absolute lift over control</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              absolute lift over control
+            </span>
             {meta?.intervention_type ? (
-              <span className="ml-auto text-2xs text-ink-faint">
+              <span className="ml-auto text-xs text-slate-400">
                 intervention: {meta.intervention_type.replace(/_/g, " ")}
               </span>
             ) : null}
@@ -108,10 +110,10 @@ function ExperimentCard({
           {[control, treatment].filter(Boolean).map((v) => (
             <div key={v!.variant}>
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-[13px] font-medium capitalize text-ink">
+                <span className="text-[13px] font-medium capitalize text-slate-800">
                   {v!.variant === "treatment" ? "AI-driven" : "Control"}
                 </span>
-                <span className="font-mono text-[13px] text-ink tnum">
+                <span className="font-mono text-[13px] text-slate-700 tnum">
                   {pct(v!.recovery_rate)}
                 </span>
               </div>
@@ -120,7 +122,7 @@ function ExperimentCard({
                 max={maxRate}
                 tone={v!.variant === "treatment" ? "accent" : "neutral"}
               />
-              <p className="mt-1.5 text-2xs text-ink-faint">
+              <p className="mt-1.5 text-xs text-slate-400">
                 {num(v!.recovered_events)} of {num(v!.recovery_events)} recovered ·{" "}
                 {rupeesCompactFromString(v!.recovered_value)}
               </p>
@@ -129,13 +131,15 @@ function ExperimentCard({
         </div>
 
         {!lead && exp.absolute_lift != null ? (
-          <div className="flex items-center gap-2 border-t border-line/[.07] pt-3 text-[13px]">
-            <span className="label-caps">Absolute lift</span>
-            <span className="font-mono font-semibold text-success tnum">
+          <div className="flex items-center gap-2 border-t border-slate-100 pt-3 text-[13px]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              Absolute lift
+            </span>
+            <span className="font-mono font-semibold text-emerald-600 tnum">
               {pp(exp.absolute_lift)}
             </span>
             {meta?.intervention_type ? (
-              <span className="ml-auto text-2xs text-ink-faint">
+              <span className="ml-auto text-xs text-slate-400">
                 intervention: {meta.intervention_type.replace(/_/g, " ")}
               </span>
             ) : null}

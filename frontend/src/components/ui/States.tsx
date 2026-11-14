@@ -21,16 +21,16 @@ export function EmptyState({
     <div
       className={cn(
         "flex flex-col items-center justify-center gap-3 px-6 py-14 text-center",
-        className,
+        className
       )}
     >
-      <div className="grid size-11 place-items-center rounded-full bg-surface-2 text-ink-faint ring-1 ring-inset ring-line/[.08]">
+      <div className="grid size-11 place-items-center rounded-full bg-slate-100 text-slate-400 ring-1 ring-inset ring-slate-200/60">
         {icon ?? <Inbox size={18} />}
       </div>
       <div className="max-w-sm space-y-1">
-        <p className="text-sm font-semibold text-ink">{title}</p>
+        <p className="text-sm font-semibold text-slate-900">{title}</p>
         {description ? (
-          <p className="text-[13px] leading-relaxed text-ink-muted">{description}</p>
+          <p className="text-[13px] leading-relaxed text-slate-500">{description}</p>
         ) : null}
       </div>
       {action}
@@ -88,15 +88,15 @@ export function ErrorState({ error, onRetry, compact, className }: ErrorStatePro
       className={cn(
         "flex flex-col items-center justify-center gap-3 text-center",
         compact ? "px-4 py-8" : "px-6 py-14",
-        className,
+        className
       )}
     >
-      <div className="grid size-11 place-items-center rounded-full bg-danger/10 text-danger ring-1 ring-inset ring-danger/20">
+      <div className="grid size-11 place-items-center rounded-full bg-red-50 text-red-600 ring-1 ring-inset ring-red-200/60">
         {d.icon}
       </div>
       <div className="max-w-md space-y-1">
-        <p className="text-sm font-semibold text-ink">{d.title}</p>
-        <p className="text-[13px] leading-relaxed text-ink-muted">{d.body}</p>
+        <p className="text-sm font-semibold text-slate-900">{d.title}</p>
+        <p className="text-[13px] leading-relaxed text-slate-500">{d.body}</p>
       </div>
       {onRetry ? (
         <Button size="sm" variant="secondary" onClick={onRetry}>
