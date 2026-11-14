@@ -37,10 +37,8 @@ import {
 function useMergedScores(
   eventId: number,
   agentScores: QuantScore[] | null | undefined,
-  agentRunResolved: boolean,
+  agentRunResolved: boolean
 ): { scores: QuantScore[]; source: string | null } {
-  // Only hit the (point-in-time SQL) score endpoints once we know the recorded
-  // agent run has no scores of its own — otherwise we'd fire them needlessly.
   const needLive = agentRunResolved && !agentScores?.length;
   const ml = useActionScores(needLive ? eventId : null);
   const uplift = useUpliftScores(needLive ? eventId : null);
@@ -68,7 +66,7 @@ function useMergedScores(
       });
     }
     const parts = [ml.data?.model_available ? "ml" : null, uplift.data?.available ? "uplift" : null].filter(
-      Boolean,
+      Boolean
     );
     return {
       scores: [...byAction.values()],
@@ -197,7 +195,7 @@ export default function RecoveryDetail() {
   const merged = useMergedScores(
     valid ? eventId : 0,
     ctx?.quantitative_scores,
-    !agentRun.isLoading,
+    !agentRun.isLoading
   );
 
   const notFound = rzp.isError && rzp.error instanceof ApiError && rzp.error.status === 404;
@@ -243,10 +241,10 @@ export default function RecoveryDetail() {
     <Page>
       <BackLink />
 
-      {/* header */}
-      <div className="mb-7 mt-4 flex flex-col gap-3 border-b border-line/[.07] pb-6 sm:flex-row sm:items-end sm:justify-between">
+      {/* Header */}
+      <div className="mb-7 mt-4 flex flex-col gap-3 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="label-caps mb-1.5">
+          <div className="text-[10.5px] font-bold uppercase tracking-wider text-paytm-cyan mb-1.5">
             Recovery event #{eventId}
             {verified ? " · Paytm Test Mode verified" : ""}
           </div>
@@ -254,7 +252,7 @@ export default function RecoveryDetail() {
             <Skeleton className="h-9 w-48" />
           ) : r ? (
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-bold tracking-tight text-ink tnum">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 tnum">
                 {rupeesFromPaise(r.amount_paise, true)}
               </h1>
               <Badge
@@ -272,7 +270,7 @@ export default function RecoveryDetail() {
             </div>
           ) : null}
           {payment.data ? (
-            <p className="mt-2 text-[13px] text-ink-muted">
+            <p className="mt-2 text-[13px] text-slate-500">
               {failureLabel(payment.data.failure_reason)} ·{" "}
               {payment.data.failed_at
                 ? `failed ${relTime(payment.data.failed_at)}`
@@ -282,15 +280,15 @@ export default function RecoveryDetail() {
           ) : null}
         </div>
         {event.data ? (
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-right text-2xs">
-            <dt className="text-ink-faint">Opened</dt>
-            <dd className="font-mono text-ink-muted tnum">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-right text-[11px]">
+            <dt className="text-slate-400 font-medium">Opened</dt>
+            <dd className="font-mono text-slate-600 tnum">
               {dateTime(event.data.created_at)}
             </dd>
             {event.data.closed_at ? (
               <>
-                <dt className="text-ink-faint">Closed</dt>
-                <dd className="font-mono text-ink-muted tnum">
+                <dt className="text-slate-400 font-medium">Closed</dt>
+                <dd className="font-mono text-slate-600 tnum">
                   {dateTime(event.data.closed_at)}
                 </dd>
               </>
@@ -306,9 +304,9 @@ export default function RecoveryDetail() {
           </CardBody>
         </Card>
       ) : (
-        <div className="grid gap-3 lg:grid-cols-[300px_minmax(0,1fr)]">
-          {/* left: journey + evidence — supporting metadata, deliberately narrow */}
-          <div className="space-y-3">
+        <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
+          {/* Left: Journey + Evidence */}
+          <div className="space-y-4">
             <Card>
               <CardHeader eyebrow="Lifecycle" title="Recovery journey" />
               <CardBody>
@@ -328,9 +326,8 @@ export default function RecoveryDetail() {
             </Card>
           </div>
 
-          {/* right: the agent trace is the dominant element — full width, with the
-              Paytm + customer-message panels demoted to a secondary row below */}
-          <div className="space-y-3">
+          {/* Right: Agent Trace + Intelligence + Paytm/Message */}
+          <div className="space-y-4">
             {agentRun.isLoading ? (
               <Card>
                 <CardBody>
@@ -348,7 +345,7 @@ export default function RecoveryDetail() {
               />
               <CardBody>
                 {merged.scores.length === 0 && !ctx ? (
-                  <p className="text-[13px] text-ink-muted">
+                  <p className="text-[13px] text-slate-500">
                     No untried actions to score — every action has already been attempted
                     on this event.
                   </p>
@@ -369,7 +366,7 @@ export default function RecoveryDetail() {
               if (!r && !showMsg) return null;
               return (
                 <div
-                  className={`grid gap-3 ${r && showMsg ? "xl:grid-cols-2" : ""}`}
+                  className={`grid gap-4 ${r && showMsg ? "xl:grid-cols-2" : ""}`}
                 >
                   {r ? (
                     <PaytmCard
@@ -404,10 +401,10 @@ function BackLink() {
   return (
     <Link
       to="/recoveries"
-      className="inline-flex items-center gap-1.5 text-[13px] text-ink-muted transition-colors hover:text-ink"
+      className="inline-flex items-center gap-1.5 text-[13px] text-slate-500 font-medium transition-colors hover:text-slate-800"
     >
       <ArrowLeft size={14} />
-      All recoveries
+      All cases
     </Link>
   );
 }

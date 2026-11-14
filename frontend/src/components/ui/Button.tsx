@@ -13,31 +13,31 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-accent text-white hover:brightness-110 active:brightness-95 shadow-[0_1px_0_0_rgb(255_255_255_/_0.12)_inset]",
+    "bg-[#002970] text-white hover:bg-[#002970]-hover active:bg-[#002970]-dark shadow-xs",
   secondary:
-    "bg-surface-3 text-ink hover:bg-surface-2 ring-1 ring-inset ring-line/[.12]",
-  ghost: "text-ink-muted hover:text-ink hover:bg-surface-2",
-  danger: "bg-danger/12 text-danger hover:bg-danger/20 ring-1 ring-inset ring-danger/25",
+    "bg-white text-slate-700 hover:bg-slate-50 ring-1 ring-inset ring-slate-200/80 shadow-2xs",
+  ghost: "text-slate-500 hover:text-slate-800 hover:bg-slate-100",
+  danger: "bg-red-50 text-red-700 hover:bg-red-100 ring-1 ring-inset ring-red-200/60",
 };
 const SIZES: Record<Size, string> = {
-  sm: "h-8 px-3 text-xs gap-1.5 rounded-[7px]",
-  md: "h-9 px-3.5 text-[13px] gap-2 rounded-control",
+  sm: "h-8 px-3 text-xs gap-1.5 rounded-lg",
+  md: "h-9 px-3.5 text-[13px] gap-2 rounded-xl",
 };
 
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
   { variant = "secondary", size = "md", loading, className, children, disabled, ...rest },
-  ref,
+  ref
 ) {
   return (
     <button
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex select-none items-center justify-center font-medium transition-[background,filter,color] duration-150",
+        "inline-flex select-none items-center justify-center font-semibold transition-all duration-150",
         "disabled:cursor-not-allowed disabled:opacity-50",
         VARIANTS[variant],
         SIZES[size],
-        className,
+        className
       )}
       {...rest}
     >

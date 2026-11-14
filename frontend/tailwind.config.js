@@ -4,6 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        paytm: {
+          cyan: "#00BAF2",
+          "cyan-hover": "#0096F3",
+          "cyan-light": "#E5F4FC",
+          "cyan-soft": "#ABE0F3",
+          navy: "#002970",
+          "navy-dark": "#052D71",
+          "navy-hover": "#001e54",
+        },
         bg: "rgb(var(--bg) / <alpha-value>)",
         surface: "rgb(var(--surface) / <alpha-value>)",
         "surface-2": "rgb(var(--surface-2) / <alpha-value>)",
@@ -30,17 +39,15 @@ export default {
         "2xs": ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.02em" }],
       },
       borderRadius: {
-        card: "12px",
-        control: "9px",
-        chip: "7px",
+        card: "16px",
+        control: "10px",
+        chip: "8px",
       },
       boxShadow: {
-        // theme-aware: --panel-shadow carries a top edge-highlight + ambient
-        // shadow tuned per theme (see src/index.css). A static black shadow is
-        // invisible on the near-black dark background.
         panel: "var(--panel-shadow)",
+        card: "0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(0, 41, 112, 0.04)",
         hero: "var(--hero-shadow)",
-        pop: "0 8px 32px -8px rgb(0 0 0 / 0.4)",
+        pop: "0 8px 32px -8px rgb(0 0 0 / 0.12)",
         glow: "0 0 0 1px rgb(var(--accent) / 0.35), 0 0 28px -6px rgb(var(--accent) / 0.45)",
       },
       keyframes: {

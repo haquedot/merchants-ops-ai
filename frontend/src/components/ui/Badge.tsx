@@ -4,11 +4,16 @@ import { cn } from "@/lib/cn";
 export type Tone = "neutral" | "accent" | "success" | "warning" | "danger";
 
 const TONES: Record<Tone, string> = {
-  neutral: "bg-surface-3 text-ink-muted ring-1 ring-inset ring-line/[.1]",
-  accent: "bg-accent/10 text-accent ring-1 ring-inset ring-accent/25",
-  success: "bg-success/10 text-success ring-1 ring-inset ring-success/25",
-  warning: "bg-warning/10 text-warning ring-1 ring-inset ring-warning/25",
-  danger: "bg-danger/10 text-danger ring-1 ring-inset ring-danger/25",
+  neutral:
+    "bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200/60",
+  accent:
+    "bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-200/60",
+  success:
+    "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200/60",
+  warning:
+    "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200/60",
+  danger:
+    "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200/60",
 };
 
 export function Badge({
@@ -25,16 +30,16 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-chip px-2 py-0.5 text-2xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
         TONES[tone],
-        className,
+        className
       )}
     >
       {dot ? (
         <span
           className={cn(
             "size-1.5 rounded-full",
-            tone === "neutral" ? "bg-ink-faint" : "bg-current",
+            tone === "neutral" ? "bg-slate-400" : "bg-current"
           )}
         />
       ) : null}

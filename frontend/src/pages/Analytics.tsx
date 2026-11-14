@@ -47,9 +47,9 @@ export default function Analytics() {
         description="Money recovered above a randomised control baseline, what drives it, and how the models behind the decisions actually perform."
       />
 
-      {/* impact hero */}
+      {/* Impact Hero */}
       {impact.isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <StatSkeleton key={i} />
           ))}
@@ -71,11 +71,11 @@ export default function Analytics() {
             />
           ) : null}
 
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <Stat
               label="Incremental revenue recovered"
               value={rupeesCompact(
-                (impact.data.incremental_revenue_recovered_paise ?? 0) / 100,
+                (impact.data.incremental_revenue_recovered_paise ?? 0) / 100
               )}
               sub="vs control baseline"
               tone="success"
@@ -89,10 +89,10 @@ export default function Analytics() {
             <Stat
               label="Treated / control"
               value={`${num(impact.data.treated_group_size)} / ${num(
-                impact.data.control_group_size,
+                impact.data.control_group_size
               )}`}
               sub={`${num(impact.data.recovered_treated_events)} vs ${num(
-                impact.data.recovered_control_events,
+                impact.data.recovered_control_events
               )} recovered`}
             />
           </div>
@@ -100,15 +100,15 @@ export default function Analytics() {
       ) : (
         <Card>
           <CardBody>
-            <p className="text-[13px] text-ink-muted">
+            <p className="text-[13px] text-slate-500">
               {impact.data?.reason ?? "Impact is not computable for the current data."}
             </p>
           </CardBody>
         </Card>
       )}
 
-      {/* control vs treatment + actions */}
-      <div className="mt-8 grid gap-3 lg:grid-cols-2">
+      {/* Control vs Treatment + Actions */}
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             eyebrow="Randomised comparison"
@@ -124,16 +124,16 @@ export default function Analytics() {
               {(d) => (
                 <table className="w-full text-[13px]">
                   <thead>
-                    <tr className="label-caps [&>th]:pb-2 [&>th]:text-left">
+                    <tr className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500 [&>th]:pb-2 [&>th]:text-left">
                       <th>Group</th>
                       <th className="text-right">Events</th>
                       <th className="text-right">Recovery rate</th>
                       <th className="text-right">Recovered</th>
                     </tr>
                   </thead>
-                  <tbody className="tnum [&>tr>td]:border-t [&>tr>td]:border-line/[.06] [&>tr>td]:py-2.5">
+                  <tbody className="tnum [&>tr>td]:border-t [&>tr>td]:border-slate-100 [&>tr>td]:py-2.5">
                     <tr>
-                      <td className="text-ink-muted">Control</td>
+                      <td className="text-slate-500">Control</td>
                       <td className="text-right">{num(d.control.recovery_events)}</td>
                       <td className="text-right">{pct(d.control.recovery_rate)}</td>
                       <td className="text-right">
@@ -141,9 +141,9 @@ export default function Analytics() {
                       </td>
                     </tr>
                     <tr>
-                      <td className="font-medium text-accent">AI-driven</td>
+                      <td className="font-medium text-paytm-cyan">AI-driven</td>
                       <td className="text-right">{num(d.treatment.recovery_events)}</td>
-                      <td className="text-right font-medium text-accent">
+                      <td className="text-right font-medium text-paytm-cyan">
                         {pct(d.treatment.recovery_rate)}
                       </td>
                       <td className="text-right">
@@ -151,12 +151,12 @@ export default function Analytics() {
                       </td>
                     </tr>
                     <tr>
-                      <td className="font-medium text-success">Lift</td>
-                      <td className="text-right text-ink-faint">—</td>
-                      <td className="text-right font-medium text-success">
+                      <td className="font-medium text-emerald-600">Lift</td>
+                      <td className="text-right text-slate-400">—</td>
+                      <td className="text-right font-medium text-emerald-600">
                         {pp(d.absolute_lift)}
                       </td>
-                      <td className="text-right text-ink-faint">—</td>
+                      <td className="text-right text-slate-400">—</td>
                     </tr>
                   </tbody>
                 </table>
@@ -172,13 +172,13 @@ export default function Analytics() {
               {(d) => (
                 <>
                   <ActionRateChart actions={d.actions} />
-                  <div className="mt-3 space-y-1.5 border-t border-line/[.07] pt-3 text-2xs">
+                  <div className="mt-3 space-y-1.5 border-t border-slate-100 pt-3 text-xs">
                     {[...d.actions]
                       .sort((a, b) => b.recovery_rate - a.recovery_rate)
                       .map((a) => (
                         <div
                           key={a.action_type}
-                          className="flex items-center justify-between text-ink-muted"
+                          className="flex items-center justify-between text-slate-500"
                         >
                           <span>{actionLabel(a.action_type)}</span>
                           <span className="font-mono tnum">
@@ -197,24 +197,24 @@ export default function Analytics() {
         </Card>
       </div>
 
-      {/* portfolio scarcity allocation */}
-      <h2 className="mb-3 mt-8 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
-        <span className="h-3.5 w-0.5 rounded-full bg-accent/60" aria-hidden />
+      {/* Portfolio Scarcity Allocation */}
+      <h2 className="mb-3 mt-8 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+        <span className="h-3.5 w-0.5 rounded-full bg-paytm-cyan/60" aria-hidden />
         Batch allocation
       </h2>
-      <p className="mb-3 max-w-2xl text-[13px] leading-relaxed text-ink-muted">
+      <p className="mb-3 max-w-2xl text-[13px] leading-relaxed text-slate-500">
         The agent decides one event at a time. This ranks every currently-open
         eligible event by expected value and shows what a limited number of
         interventions can and cannot cover — and what that limit costs.
       </p>
       <PortfolioAllocation />
 
-      {/* model intelligence */}
-      <h2 className="mb-3 mt-8 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
-        <span className="h-3.5 w-0.5 rounded-full bg-accent/60" aria-hidden />
+      {/* Model Intelligence */}
+      <h2 className="mb-3 mt-8 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+        <span className="h-3.5 w-0.5 rounded-full bg-paytm-cyan/60" aria-hidden />
         Model intelligence
       </h2>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             eyebrow="Recovery-response model"
@@ -249,19 +249,21 @@ export default function Analytics() {
                 </dl>
                 {reliabilityRows(ml.data.test_metrics).length ? (
                   <div>
-                    <p className="label-caps mb-2">Calibration — predicted vs observed</p>
+                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                      Calibration — predicted vs observed
+                    </p>
                     <ReliabilityBars rows={reliabilityRows(ml.data.test_metrics)} />
                   </div>
                 ) : null}
                 {ml.data.synthetic_benchmark ? (
-                  <p className="text-2xs text-ink-faint">
+                  <p className="text-xs text-slate-400">
                     Synthetic benchmark — trained on generated data with a known outcome
                     process. Illustrative, not production.
                   </p>
                 ) : null}
               </>
             ) : (
-              <p className="text-[13px] text-ink-muted">{ml.data?.detail ?? "Model unavailable."}</p>
+              <p className="text-[13px] text-slate-500">{ml.data?.detail ?? "Model unavailable."}</p>
             )}
           </CardBody>
         </Card>
@@ -295,17 +297,19 @@ export default function Analytics() {
                     value={metricStr(
                       uplift.data.test_evaluation,
                       ["policy_value", "uplift_policy", "gain_vs_random_action"],
-                      true,
+                      true
                     )}
                   />
                 </dl>
                 {uplift.data.limitations?.length ? (
                   <div>
-                    <p className="label-caps mb-2">Stated limitations</p>
-                    <ul className="space-y-1.5 text-2xs leading-relaxed text-ink-muted">
+                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                      Stated limitations
+                    </p>
+                    <ul className="space-y-1.5 text-xs leading-relaxed text-slate-500">
                       {uplift.data.limitations.slice(0, 4).map((l, i) => (
                         <li key={i} className="flex gap-1.5">
-                          <span className="mt-1.5 size-1 shrink-0 rounded-full bg-ink-faint" />
+                          <span className="mt-1.5 size-1 shrink-0 rounded-full bg-slate-400" />
                           {l}
                         </li>
                       ))}
@@ -314,7 +318,7 @@ export default function Analytics() {
                 ) : null}
               </>
             ) : (
-              <p className="text-[13px] text-ink-muted">
+              <p className="text-[13px] text-slate-500">
                 {uplift.data?.detail ?? "Model unavailable."}
               </p>
             )}
@@ -328,8 +332,10 @@ export default function Analytics() {
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="label-caps mb-0.5">{label}</dt>
-      <dd className="font-mono text-ink tnum">{value}</dd>
+      <dt className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+        {label}
+      </dt>
+      <dd className="font-mono text-slate-900 tnum">{value}</dd>
     </div>
   );
 }
@@ -337,7 +343,7 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 function metricStr(
   obj: Record<string, unknown> | null | undefined,
   path: string[],
-  round4 = false,
+  round4 = false
 ): string {
   let cur: unknown = obj;
   for (const k of path) {
@@ -352,7 +358,7 @@ function metricStr(
 }
 
 function reliabilityRows(
-  metrics: Record<string, unknown> | null | undefined,
+  metrics: Record<string, unknown> | null | undefined
 ): ReliabilityRow[] {
   const table =
     ((metrics?.calibration as Record<string, unknown> | undefined)

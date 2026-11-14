@@ -43,13 +43,12 @@ export function EvidenceTrail({
 }) {
   const rows: Row[] = [];
 
-  // Collapse multiple recorded runs of the same event to the most informative one.
   const runs = agentEvents.filter((e) => e.event_type === "agent_recovery_run");
   const bestRun =
     runs.find((r) => /^(execute|escalate):/.test(r.decision ?? "")) ??
     [...runs].sort((a, b) => b.id - a.id)[0];
   const shown = agentEvents.filter(
-    (e) => e.event_type !== "agent_recovery_run" || e.id === bestRun?.id,
+    (e) => e.event_type !== "agent_recovery_run" || e.id === bestRun?.id
   );
 
   for (const ev of [...shown].sort((a, b) => a.id - b.id)) {
@@ -79,8 +78,8 @@ export function EvidenceTrail({
 
   if (rows.length === 0) {
     return (
-      <div className="flex items-center gap-2 px-1 py-4 text-[13px] text-ink-muted">
-        <ScrollText size={14} className="text-ink-faint" />
+      <div className="flex items-center gap-2 px-1 py-4 text-[13px] text-slate-500">
+        <ScrollText size={14} className="text-slate-400" />
         No agent or webhook events have been recorded for this recovery yet.
       </div>
     );
@@ -93,32 +92,32 @@ export function EvidenceTrail({
         return (
           <li
             key={i}
-            className="grid animate-fade-up grid-cols-[auto_minmax(0,1fr)] gap-x-3 border-b border-line/[.06] py-3 last:border-0"
+            className="grid animate-fade-up grid-cols-[auto_minmax(0,1fr)] gap-x-3 border-b border-slate-100 py-3 last:border-0"
             style={{ animationDelay: `${i * 45}ms` }}
           >
             <span
               className={cn(
                 "mt-0.5 grid size-6 shrink-0 place-items-center rounded-full ring-1 ring-inset",
                 row.tone === "success"
-                  ? "bg-success/10 text-success ring-success/25"
+                  ? "bg-emerald-50 text-emerald-600 ring-emerald-200/60"
                   : row.tone === "accent"
-                    ? "bg-accent/10 text-accent ring-accent/25"
-                    : "bg-surface-3 text-ink-faint ring-line/[.1]",
+                    ? "bg-sky-50 text-paytm-cyan ring-sky-200/60"
+                    : "bg-slate-100 text-slate-400 ring-slate-200/60"
               )}
             >
               <Icon size={12} />
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-2">
-                <span className="text-[13px] font-semibold text-ink">{row.actor}</span>
-                <span className="font-mono text-2xs text-ink-faint">{row.event}</span>
+                <span className="text-[13px] font-semibold text-slate-800">{row.actor}</span>
+                <span className="font-mono text-[11px] text-slate-400">{row.event}</span>
               </div>
-              <p className="mt-0.5 text-2xs leading-relaxed text-ink-muted">{row.detail}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{row.detail}</p>
             </div>
           </li>
         );
       })}
-      <li className="pt-3 text-2xs leading-relaxed text-ink-faint">
+      <li className="pt-3 text-xs leading-relaxed text-slate-400">
         Every row is a real persisted record. Secrets, raw webhook payloads and model
         chain-of-thought are never stored.
       </li>

@@ -21,24 +21,31 @@ export function Stat({
 }) {
   const toneText =
     tone === "success"
-      ? "text-success"
+      ? "text-emerald-600"
       : tone === "warning"
-        ? "text-warning"
+        ? "text-amber-600"
         : tone === "danger"
-          ? "text-danger"
+          ? "text-red-600"
           : tone === "accent"
-            ? "text-accent"
-            : "text-ink";
+            ? "text-paytm-cyan"
+            : "text-slate-900";
   return (
-    <div className={cn("panel flex flex-col p-5 shadow-panel", className)}>
-      <div className="label-caps">{label}</div>
+    <div
+      className={cn(
+        "flex flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs",
+        className
+      )}
+    >
+      <div className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">
+        {label}
+      </div>
       <div
         className={cn(
           "mt-2 tracking-tight tnum",
           hero
             ? "text-[clamp(1.9rem,4vw,2.9rem)] font-bold leading-none"
             : "text-2xl font-semibold",
-          toneText,
+          toneText
         )}
       >
         {value}
@@ -48,14 +55,14 @@ export function Stat({
           <span
             className={cn(
               "inline-flex items-center gap-0.5 font-medium tnum",
-              delta.positive ? "text-success" : "text-danger",
+              delta.positive ? "text-emerald-600" : "text-red-600"
             )}
           >
             {delta.positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
             {delta.value}
           </span>
         ) : null}
-        {sub ? <span className="text-ink-muted">{sub}</span> : null}
+        {sub ? <span className="text-slate-500">{sub}</span> : null}
       </div>
     </div>
   );
