@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  AlertTriangle,
   Bot,
   Clock,
   Cpu,
@@ -58,30 +57,30 @@ function DecisionSummary({
   return (
     <div
       className={cn(
-        "rounded-control border p-4",
+        "rounded-2xl border p-4.5 shadow-2xs",
         escalated
-          ? "border-warning/25 bg-warning/[.07]"
+          ? "border-amber-200/80 bg-amber-50/60"
           : failedSafe
-            ? "border-line/[.1] bg-surface-2"
-            : "border-accent/30 border-l-2 border-l-accent bg-accent/[.08]",
+            ? "border-slate-200 bg-slate-50"
+            : "border-sky-200/80 border-l-4 border-l-paytm-cyan bg-gradient-to-r from-sky-50/80 to-white",
       )}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <span
           className={cn(
-            "grid size-7 place-items-center rounded-full",
+            "grid size-8 place-items-center rounded-xl",
             escalated
-              ? "bg-warning/15 text-warning"
+              ? "bg-amber-100 text-amber-700"
               : failedSafe
-                ? "bg-surface-3 text-ink-muted"
-                : "bg-accent/15 text-accent",
+                ? "bg-slate-200 text-slate-600"
+                : "bg-sky-100 text-paytm-cyan",
           )}
         >
-          {escalated ? <Flag size={14} /> : failedSafe ? <TriangleAlert size={14} /> : <Sparkles size={14} />}
+          {escalated ? <Flag size={15} /> : failedSafe ? <TriangleAlert size={15} /> : <Sparkles size={15} />}
         </span>
         <div>
-          <p className="label-caps">Agent decision</p>
-          <p className="text-[15px] font-bold text-ink">
+          <p className="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">Agent Decision</p>
+          <p className="text-[15px] font-bold text-slate-900">
             {chosenAction
               ? `Execute ${actionLabel(chosenAction)}`
               : escalated
@@ -92,27 +91,27 @@ function DecisionSummary({
       </div>
 
       {reasoning ? (
-        <p className="mt-3 border-l-2 border-line/[.12] pl-3 text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-3 border-l-2 border-slate-200 pl-3 text-[13px] leading-relaxed text-slate-600">
           {reasoning}
         </p>
       ) : null}
 
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-line/[.08] pt-3 text-2xs text-ink-faint">
-        <span className="inline-flex items-center gap-1">
-          <Bot size={11} />{" "}
+      <div className="mt-3.5 flex flex-wrap gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-400">
+        <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+          <Bot size={13} className="text-paytm-cyan" />{" "}
           {chosenAction
             ? `executed ${actionLabel(chosenAction)}`
             : decision.replace(/[:_]/g, " ")}
         </span>
         <span className="inline-flex items-center gap-1">
-          <Clock size={11} /> {turns} turn{turns === 1 ? "" : "s"} · {ms(latencyMs)}
+          <Clock size={12} /> {turns} turn{turns === 1 ? "" : "s"} · {ms(latencyMs)}
         </span>
         {tokens ? (
           <span className="inline-flex items-center gap-1">
-            <Cpu size={11} /> {num(tokens)} tokens
+            <Cpu size={12} /> {num(tokens)} tokens
           </span>
         ) : null}
-        <span className="font-mono">{model}</span>
+        <span className="font-mono text-[11px] text-slate-500">{model}</span>
       </div>
     </div>
   );
@@ -126,16 +125,12 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
 
   const ctx = persisted?.ctx ?? null;
 
-  // The trace + summary currently displayed: a fresh live run takes precedence.
   const trace: ToolTraceEntry[] = liveResult?.tool_trace ?? ctx?.tool_trace ?? [];
   const actionIncrementality =
     liveResult?.action_incrementality ?? ctx?.action_incrementality ?? null;
   const actionLiftTrend =
     liveResult?.action_lift_trend ?? ctx?.action_lift_trend ?? null;
 
-  // A rate-limited / provider-outage run stores the raw provider error as its
-  // reasoning. When the agent had already chosen an action, its real rationale
-  // is the `reason` it gave the execute tool — show that instead.
   const executeReason = (() => {
     const ex = [...trace].reverse().find((t) => t.tool === "execute_recovery_action");
     const r = ex?.arguments?.reason;
@@ -230,8 +225,8 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
   return (
     <Card>
       <CardHeader
-        eyebrow="Recovery intelligence"
-        title="AI agent"
+        eyebrow="Autonomous Operations Intelligence"
+        title="Paytm Saathi Agent"
         action={
           <div className="flex items-center gap-2">
             {liveResult ? (
@@ -248,8 +243,8 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
       />
       <CardBody className="space-y-4">
         {!persisted && !liveResult && !runMut.isPending ? (
-          <div className="rounded-control border border-line/[.08] bg-surface-2 p-4">
-            <p className="text-[13px] text-ink-muted">
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50 p-4">
+            <p className="text-[13px] text-slate-500">
               No agent run is on record for this event. Run the autonomous agent to
               see it observe the context, score every action, and decide — one tool
               per turn.
@@ -258,17 +253,16 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
         ) : null}
 
         {runMut.isPending ? (
-          <div className="flex items-center gap-3 rounded-control border border-accent/25 bg-accent/[.05] p-4">
-            <span className="grid size-8 place-items-center rounded-full bg-accent/15">
-              <span className="size-2.5 animate-pulse rounded-full bg-accent" />
+          <div className="flex items-center gap-3 rounded-xl border border-sky-200 bg-sky-50/70 p-4">
+            <span className="grid size-8 place-items-center rounded-full bg-sky-100">
+              <span className="size-2.5 animate-pulse rounded-full bg-paytm-cyan" />
             </span>
             <div>
-              <p className="flex items-center gap-1.5 text-[13px] font-semibold text-accent">
-                AI recovery active
+              <p className="flex items-center gap-1.5 text-[13px] font-semibold text-paytm-cyan">
+                AI Agent Active & Investigating
               </p>
-              <p className="text-2xs text-ink-muted">
-                Calling Gemini in real time — this can take up to a minute on the free
-                tier.
+              <p className="text-xs text-slate-500">
+                Calling Gemini in real time — inspecting telemetry and transaction context...
               </p>
             </div>
           </div>
@@ -293,10 +287,10 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
             <DecisionSummary {...summary} />
 
             {summary.status === "failed_safe" ? (
-              <div className="flex items-start gap-2 rounded-control border border-line/[.08] bg-surface-2 p-3 text-2xs leading-relaxed text-ink-muted">
-                <AlertTriangle size={13} className="mt-0.5 shrink-0 text-warning" />
+              <div className="flex items-start gap-2 rounded-xl border border-amber-200/80 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-800">
+                <TriangleAlert size={14} className="mt-0.5 shrink-0 text-amber-600" />
                 <span>
-                  This run ended in a <span className="font-medium text-ink">safe stop</span> (
+                  This run ended in a <span className="font-semibold">safe stop</span> (
                   {stopReasonLabel(summary.stopReason)}). Guardrails and the database are
                   unaffected — a created Payment Link is never treated as a recovery, and
                   no state is corrupted.
@@ -305,31 +299,28 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
             ) : null}
 
             {isScripted ? (
-              <p className="text-2xs text-ink-faint">
-                Recorded with a deterministic provider (no Gemini calls). Use{" "}
-                <span className="font-medium text-ink-muted">Run live</span> for a real
+              <p className="text-xs text-slate-400">
+                Recorded with a deterministic provider. Use{" "}
+                <span className="font-medium text-slate-600">Run again</span> for a real
                 Gemini run.
               </p>
             ) : null}
           </>
         ) : null}
 
-        <div className="flex flex-wrap items-center gap-2 border-t border-line/[.07] pt-4">
+        <div className="flex flex-wrap items-center gap-2.5 border-t border-slate-100 pt-4">
           <Button variant="primary" size="sm" onClick={runLive} loading={runMut.isPending}>
             {liveResult || persisted ? <RotateCw size={13} /> : <Play size={13} />}
             {liveResult || persisted ? "Run again" : "Run recovery agent"}
           </Button>
-          <Button variant="danger" size="sm" onClick={runLiveExecute} loading={runMut.isPending}>
-            <Zap size={13} />
-            Run live + create Payment Link
+          <Button variant="secondary" size="sm" onClick={runLiveExecute} loading={runMut.isPending} className="border-sky-200 text-paytm-navy hover:bg-sky-50">
+            <Zap size={13} className="text-paytm-cyan fill-current" />
+            Run live + create Paytm Payment Link
           </Button>
         </div>
-        <p className="text-2xs text-ink-faint">
-          <span className="font-medium text-ink-muted">Run recovery agent</span> — dry
-          run, real LLM reasoning, no external action.{" "}
-          <span className="font-medium text-danger">Run live + create Payment Link</span> —
-          same reasoning, but if the agent chooses an action it really calls Paytm
-          and creates a Test Mode Payment Link.
+        <p className="text-[11px] text-slate-400">
+          <strong className="text-slate-600">Run recovery agent</strong> — dry run, real LLM reasoning, no external side effect.{" "}
+          <strong className="text-paytm-navy">Run live + create Paytm Payment Link</strong> — executes safe real-world action on Paytm Test Mode.
         </p>
       </CardBody>
     </Card>
