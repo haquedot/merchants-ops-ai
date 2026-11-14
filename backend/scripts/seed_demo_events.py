@@ -12,7 +12,7 @@ dashboard's "Run Recovery Agent" experience has real, explorable content, and
 pre-persists a real agent trace for each one using a **scripted provider**:
 
     * ZERO Gemini API calls  (the scripted provider makes none)
-    * ZERO Razorpay calls    (dry_run=True -> execution is simulated)
+    * ZERO Paytm calls       (dry_run=True -> execution is simulated)
     * ZERO new Payment Links
     * a real Hinglish TTS ``.wav`` per event (local pyttsx3, no network)
 
@@ -23,7 +23,7 @@ Every row it writes is tagged ``demo_ui_*`` and is fully reversible:
     python -m scripts.seed_demo_events --reset --seed   # reset then recreate
 
 It never touches the real verified recovery event (18499), the recovery /
-Razorpay / agent / ML logic, or the schema.
+Paytm / agent / ML logic, or the schema.
 """
 from __future__ import annotations
 
@@ -447,7 +447,7 @@ def seed(db, *, force: bool) -> None:
         print(f"  created recovery event {eid:>6}  {spec.name}  "
               f"Rs.{spec.amount_paise/100:.0f}  ({spec.failure_reason})")
 
-    print("\nrunning the scripted agent (0 Gemini, 0 Razorpay) for each event:")
+    print("\nrunning the scripted agent (0 Gemini, 0 Paytm) for each event:")
     for eid, spec in created:
         result = run_recovery_agent(
             db, eid,

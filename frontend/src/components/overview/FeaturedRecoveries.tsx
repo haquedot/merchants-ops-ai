@@ -11,7 +11,7 @@ import { cn } from "@/lib/cn";
 
 export function FeaturedRecoveries() {
   const { runs: allRuns, isLoading, isError, error, refetch } = useAgentRunEvents();
-  // Pin the Razorpay-verified recovery to the top of the list.
+  // Pin the Paytm-verified recovery to the top of the list.
   const runs = [...allRuns].sort((a, b) => {
     const av = a.recovery_event_id === VERIFIED_RECOVERY_EVENT_ID ? 1 : 0;
     const bv = b.recovery_event_id === VERIFIED_RECOVERY_EVENT_ID ? 1 : 0;

@@ -1,7 +1,7 @@
 """Confidence interval for the difference of two independent proportions.
 
 Pure stdlib ``math`` -- no new dependency (the same minimal-dependency posture
-used for the Gemini and Razorpay adapters).
+used for the Gemini and Paytm adapters).
 
 Method: **Newcombe's method** (a.k.a. the "hybrid score" / MOVER interval),
 which builds the interval for ``p_treated - p_control`` from the two individual

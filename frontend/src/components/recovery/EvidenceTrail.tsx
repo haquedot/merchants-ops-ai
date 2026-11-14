@@ -1,5 +1,5 @@
 import { Bot, ScrollText, Webhook, Zap } from "lucide-react";
-import type { AgentEventListItem, RecoveryEventRazorpay } from "@/lib/types";
+import type { AgentEventListItem, RecoveryEventPaytm } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
 interface Row {
@@ -20,8 +20,8 @@ const EVENT_META: Record<
     label: (d) => `Autonomous run — decision: ${d ?? "—"}`,
     tone: "accent",
   },
-  razorpay_webhook_recovery: {
-    actor: "Razorpay webhook",
+  paytm_webhook_recovery: {
+    actor: "Paytm webhook",
     icon: Webhook,
     label: () => "Signature-verified payment_link.paid — recovery confirmed",
     tone: "success",
@@ -36,10 +36,10 @@ const EVENT_META: Record<
 
 export function EvidenceTrail({
   agentEvents,
-  razorpay,
+  paytm,
 }: {
   agentEvents: AgentEventListItem[];
-  razorpay?: RecoveryEventRazorpay;
+  paytm?: RecoveryEventPaytm;
 }) {
   const rows: Row[] = [];
 
@@ -64,14 +64,14 @@ export function EvidenceTrail({
     });
   }
 
-  const paid = razorpay?.interventions.find((i) => i.outcome_payment_recovered);
+  const paid = paytm?.interventions.find((i) => i.outcome_payment_recovered);
   if (paid) {
     rows.push({
       actor: "Recovery engine",
       actorIcon: Zap,
       event: "outcome recorded",
-      detail: `Outcome persisted — payment_recovered = true, amount from the Razorpay payment entity${
-        paid.razorpay_payment_id ? ` (${paid.razorpay_payment_id})` : ""
+      detail: `Outcome persisted — payment_recovered = true, amount from the Paytm payment entity${
+        paid.paytm_payment_id ? ` (${paid.paytm_payment_id})` : ""
       }`,
       tone: "success",
     });

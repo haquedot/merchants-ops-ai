@@ -1,5 +1,5 @@
 # ── secrets / local environment ───────────────────────────────
-# Real credentials live only in backend/.env (Gemini + Razorpay keys).
+# Real credentials live only in backend/.env (Gemini + Paytm keys).
 # Never commit them. .env.example files ARE tracked.
 **/.env
 **/.env.local

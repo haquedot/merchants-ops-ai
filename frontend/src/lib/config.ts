@@ -7,7 +7,7 @@ const raw = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
 
 export const API_BASE_URL = raw && raw.length > 0 ? raw.replace(/\/$/, "") : "";
 
-/** The real, Razorpay Test Mode–verified recovery event. Pinned in the UI. */
+/** The real, Paytm Test Mode–verified recovery event. Pinned in the UI. */
 export const VERIFIED_RECOVERY_EVENT_ID = 18499;
 
 /** Rows to show per page in the recoveries explorer. */

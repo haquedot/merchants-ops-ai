@@ -197,7 +197,7 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
             );
           } else if (!dryRun && data.chosen_action) {
             toast.push(
-              `Live run complete — ${actionLabel(data.chosen_action)} executed. Check the Razorpay card below for the real Payment Link.`,
+              `Live run complete — ${actionLabel(data.chosen_action)} executed. Check the Paytm card below for the real Payment Link.`,
               "success",
             );
           } else {
@@ -219,7 +219,7 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
       typeof window !== "undefined" &&
       !window.confirm(
         "This runs the agent live and, if it decides to act, creates a REAL " +
-          "Razorpay Test Mode Payment Link. Continue?",
+          "Paytm Test Mode Payment Link. Continue?",
       )
     ) {
       return;
@@ -328,7 +328,7 @@ export function AgentRunPanel({ recoveryEventId, persisted }: Props) {
           <span className="font-medium text-ink-muted">Run recovery agent</span> — dry
           run, real LLM reasoning, no external action.{" "}
           <span className="font-medium text-danger">Run live + create Payment Link</span> —
-          same reasoning, but if the agent chooses an action it really calls Razorpay
+          same reasoning, but if the agent chooses an action it really calls Paytm
           and creates a Test Mode Payment Link.
         </p>
       </CardBody>

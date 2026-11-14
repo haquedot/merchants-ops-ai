@@ -23,7 +23,7 @@ from app.routes import (
     uplift_router,
     agent_router,
     webhooks_router,
-    razorpay_inspect_router,
+    paytm_inspect_router,
     voice_router,
     scheduler_router,
 )
@@ -43,7 +43,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="Razorpay AI Recovery Orchestrator",
+    title="Paytm MerchantOps AI — Autonomous Merchant Teammate",
     version="0.1.0",
     lifespan=lifespan,
 )
@@ -77,7 +77,7 @@ app.include_router(ml_router)
 app.include_router(uplift_router)
 app.include_router(agent_router)
 app.include_router(webhooks_router)
-app.include_router(razorpay_inspect_router)
+app.include_router(paytm_inspect_router)
 app.include_router(voice_router)
 app.include_router(scheduler_router)
 
@@ -85,7 +85,7 @@ app.include_router(scheduler_router)
 @app.get("/")
 def root():
     return {
-        "message": "Razorpay AI Recovery Orchestrator API is running"
+        "message": "Paytm MerchantOps AI API is running"
     }
 
 

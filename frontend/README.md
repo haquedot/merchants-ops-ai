@@ -1,6 +1,6 @@
-# Reclaim — AI Revenue Recovery (frontend)
+# Paytm MerchantOps AI (frontend)
 
-A dashboard for the Razorpay AI Recovery Orchestrator. It renders backend state
+A dashboard for the Paytm MerchantOps AI Teammate. It renders backend state
 only — it never decides recovery truth, amounts, allowed actions, agent
 decisions, or payment success. Every figure on screen comes from an API
 response.
@@ -53,7 +53,7 @@ the Vite dev proxy forwards it to `http://127.0.0.1:8000`.
   client-side pagination.
 - **Recovery detail** — the case file: recovery journey, the agent's recorded
   tool-by-tool trace, its decision + rationale, ML/uplift intervention
-  intelligence, the Razorpay recovery card, the Hinglish customer message + voice
+  intelligence, the Paytm recovery card, the Hinglish customer message + voice
   artifact, and the evidence trail. A "Run live" button triggers a real Gemini
   dry run (rate-limited on the free tier; degrades to a designed safe state).
 - **Analytics** — incremental revenue with a 95% CI, control-vs-treatment, per

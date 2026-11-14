@@ -1,8 +1,8 @@
-Rayan, I inspected the actual repository and its README. **Reclaim is much more than a payment-retry chatbot.** Its main idea is to decide which failed payments are worth recovering, take a controlled action, and verify whether that action actually recovered money.
+# **Paytm MerchantOps AI — Concept & Strategic Blueprint**
 
-Repository: [Reclaim – GitHub source code](https://github.com/aadhi590/razorpay?utm_source=chatgpt.com)
+An autonomous AI teammate that investigates and resolves merchant operational issues across the Paytm ecosystem (UPI payments, Soundbox, settlements, and field operations).
 
-It was built for Razorpay AI Buildathon 2026, Track 03: AI Revenue Recovery.&#x20;
+Built for **Paytm Build for India AI Hackathon (Hyderabad Edition — Nov 2026)** — Track 03: Autonomous AI Teammates.
 
 [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
@@ -86,7 +86,7 @@ Here is the complete feature breakdown from its README.
 | Recovery prediction  | Estimates the probability of recovery                         |
 | Uplift prediction    | Estimates whether an intervention actually makes a difference |
 | Safety rules         | Prevents unauthorized or excessive actions                    |
-| Payment link         | Creates Razorpay Test Mode payment links                      |
+| Payment link         | Creates Paytm Test Mode payment links                         |
 | Webhook verification | Confirms whether payment was actually received                |
 | Portfolio allocator  | Selects which cases deserve limited recovery resources        |
 | Autonomous scheduler | Runs recovery checks automatically                            |
@@ -107,7 +107,7 @@ GitHub
 | Database | PostgreSQL                |
 | AI       | Gemini + Groq             |
 | ML       | Scikit-learn              |
-| Payment  | Razorpay Test Mode        |
+| Payment  | Paytm Test Mode           |
 | Voice    | pyttsx3                   |
 
 Interestingly, they did not use LangChain or LangGraph. They implemented their own tool-calling loop.&#x20;
@@ -198,7 +198,7 @@ Our proposed project
 | Autonomous recovery agent | Autonomous merchant support agent            |
 | Recovery scoring          | Issue priority scoring                       |
 | Deterministic guardrails  | Action permission checks                     |
-| Razorpay payment link     | Paytm-style simulated payment/support action |
+| Payment link creation    | Paytm-style simulated payment/support action |
 | Verified webhook          | Verified backend operation result            |
 | Portfolio allocator       | Support case prioritization                  |
 | Autonomous scheduler      | Automatic issue monitoring                   |

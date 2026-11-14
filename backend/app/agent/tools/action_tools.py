@@ -4,7 +4,7 @@
 
   1. persists an Intervention row, then
   2. asks :class:`~app.services.recovery_execution.RecoveryExecutionService` to
-     idempotently create a **Razorpay Test Mode Payment Link** for it.
+     idempotently create a **Paytm Test Mode Payment Link** for it.
 
 It still never sends a real SMS/WhatsApp (no verified provider exists) and never
 marks a payment recovered -- a created Payment Link is *execution success*, not
@@ -39,7 +39,7 @@ def _attach_voice(ctx: ToolContext, message: str, payload: dict[str, Any]) -> di
     unaffected.
 
     TTS is a local, cheap, reversible rendering of text the agent already
-    produced, so -- unlike the Razorpay Payment Link -- it also runs in dry-run
+    produced, so -- unlike the Paytm Payment Link -- it also runs in dry-run
     (it touches nothing in the recovery workflow).
     """
     from app.services.voice import REASON_DISABLED, VoiceResult
@@ -95,9 +95,9 @@ class ExecuteRecoveryAction(Tool):
         "simulated": {"type": "boolean"},
         "intervention_id": {"type": "integer"},
         "action_type": {"type": "string"},
-        "razorpay_payment_link_id": {"type": "string"},
+        "paytm_payment_link_id": {"type": "string"},
         "payment_link_url": {"type": "string"},
-        "razorpay_status": {"type": "string"},
+        "paytm_status": {"type": "string"},
         "reused_existing_link": {"type": "boolean"},
         "communication_sent": {"type": "boolean"},
         "payment_recovered": {"type": "boolean"},
@@ -140,10 +140,10 @@ class ExecuteRecoveryAction(Tool):
                 "attempt_number": attempt_number,
                 "communication_sent": False,
                 "payment_recovered": False,
-                "would_persist": "pending Intervention + Razorpay Test Mode Payment Link",
+                "would_persist": "pending Intervention + Paytm Test Mode Payment Link",
                 "customer_message_preview": message,
                 "note": (
-                    "DRY RUN: no Intervention persisted, NO Razorpay call, no "
+                    "DRY RUN: no Intervention persisted, NO Paytm call, no "
                     "message sent. A TTS audio file may still be generated from "
                     "the message (file only -- not a call, not delivered)."
                 ),
@@ -163,11 +163,11 @@ class ExecuteRecoveryAction(Tool):
         ctx.db.add(intervention)
         ctx.db.flush()
 
-        service = RecoveryExecutionService(ctx.db, client=ctx.razorpay_client)
+        service = RecoveryExecutionService(ctx.db, client=ctx.paytm_client)
         result = service.create_payment_link(intervention, reason=reason)
 
         if not result.success:
-            # Roll the intervention back so a transient Razorpay failure does
+            # Roll the intervention back so a transient Paytm failure does
             # not burn an attempt or permanently block this action_type.
             ctx.db.delete(intervention)
             ctx.db.flush()
@@ -194,7 +194,7 @@ class ExecuteRecoveryAction(Tool):
 
         record["simulated"] = False
         record["intervention_id"] = intervention.id
-        record["razorpay_payment_link_id"] = result.payment_link_id
+        record["paytm_payment_link_id"] = result.payment_link_id
         ctx.state.executed_actions.append(record)
         if action_type not in ctx.state.actions_attempted:
             ctx.state.actions_attempted.append(action_type)
@@ -210,7 +210,7 @@ class ExecuteRecoveryAction(Tool):
                 "intervention_id": intervention.id,
                 "attempt_number": attempt_number,
                 "note": (
-                    "Razorpay Test Mode Payment Link "
+                    "Paytm Test Mode Payment Link "
                     f"{'reused' if result.reused else 'created'}; NO SMS/WhatsApp "
                     "sent (no verified provider). Link created != payment "
                     "recovered -- observe the outcome before concluding."
@@ -223,7 +223,7 @@ class ExecuteRecoveryAction(Tool):
 class ObserveRecoveryOutcome(Tool):
     name = "observe_recovery_outcome"
     description = (
-        "Observe the real recovery state: whether the Razorpay Payment Link was "
+        "Observe the real recovery state: whether the Paytm Payment Link was "
         "created, whether it has been PAID (verified webhook), how much was "
         "recovered, whether the event is terminal, and whether another action "
         "is still allowed. A created link is NOT a recovered payment."
@@ -259,8 +259,8 @@ class ObserveRecoveryOutcome(Tool):
         interventions = []
         recovered_amount = None
         for i in sorted(event.interventions, key=lambda x: x.id):
-            link_created = i.razorpay_payment_link_id is not None
-            paid = i.last_razorpay_status == "paid"
+            link_created = i.paytm_payment_link_id is not None
+            paid = i.last_paytm_status == "paid"
             if i.outcome is not None and i.outcome.payment_recovered:
                 recovered_amount = i.outcome.recovered_amount_paise
             interventions.append(
@@ -268,7 +268,7 @@ class ObserveRecoveryOutcome(Tool):
                     "intervention_id": i.id,
                     "action": i.action_type,
                     "payment_link_created": link_created,
-                    "razorpay_status": i.last_razorpay_status,
+                    "paytm_status": i.last_paytm_status,
                     "payment_link_paid": paid,
                     "outcome_recorded": i.outcome is not None,
                     "payment_recovered": bool(

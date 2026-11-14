@@ -1,5 +1,5 @@
 """
-Synthetic data generator for the Razorpay AI Recovery Orchestrator.
+Synthetic data generator for Paytm MerchantOps AI.
 
 Populates Customer -> Subscription -> Payment -> (failed) -> RecoveryEvent
 -> Intervention -> Outcome, plus Experiment / AgentEvent / AuditLog,

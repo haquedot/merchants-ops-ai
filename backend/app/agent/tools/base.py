@@ -22,10 +22,10 @@ class ToolContext:
     db: Session
     state: RecoveryAgentState
     dry_run: bool
-    # Optional injected Razorpay client (tests / a pre-built adapter). When
+    # Optional injected Paytm client (tests / a pre-built adapter). When
     # None, the recovery execution service builds one from config after its
     # own test-mode guard passes. Never used on the dry-run path.
-    razorpay_client: Any = None
+    paytm_client: Any = None
     # Hinglish TTS. When None, the tools treat voice as disabled. Never
     # placed a call / delivered to a customer -- it produces an audio file only.
     voice_service: Any = None

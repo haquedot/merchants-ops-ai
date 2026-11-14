@@ -8,14 +8,14 @@ import { Badge } from "@/components/ui/Badge";
 import { Skeleton, SkeletonText } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/States";
 import { RecoveryJourney, type Stage } from "@/components/recovery/RecoveryJourney";
-import { RazorpayCard } from "@/components/recovery/RazorpayCard";
+import { PaytmCard } from "@/components/recovery/PaytmCard";
 import { CustomerMessageCard } from "@/components/recovery/CustomerMessageCard";
 import { EvidenceTrail } from "@/components/recovery/EvidenceTrail";
 import { InterventionIntelligence } from "@/components/recovery/InterventionIntelligence";
 import { AgentRunPanel } from "@/components/agent/AgentRunPanel";
 import {
   useRecoveryEvent,
-  useRecoveryRazorpay,
+  useRecoveryPaytm,
   usePayment,
   useSubscription,
   useCustomer,
@@ -148,10 +148,10 @@ function buildStages(args: {
       state: done(interventionExecuted),
     },
     {
-      key: "razorpay",
-      title: "Razorpay Payment Link created",
+      key: "paytm",
+      title: "Paytm Payment Link created",
       detail: linkCreated
-        ? "A Test Mode Payment Link was generated with the authoritative amount."
+        ? "A Paytm Test Mode Payment Link was generated with the authoritative amount."
         : "This recovery used a direct intervention — no Payment Link.",
       state: linkCreated ? "done" : interventionExecuted ? "skipped" : "pending",
     },
@@ -185,7 +185,7 @@ export default function RecoveryDetail() {
   const eventId = Number(id);
   const valid = Number.isInteger(eventId) && eventId > 0;
 
-  const rzp = useRecoveryRazorpay(valid ? eventId : null);
+  const rzp = useRecoveryPaytm(valid ? eventId : null);
   const event = useRecoveryEvent(valid ? eventId : null);
   const payment = usePayment(event.data?.payment_id ?? null);
   const subscription = useSubscription(payment.data?.subscription_id ?? null);
@@ -248,7 +248,7 @@ export default function RecoveryDetail() {
         <div>
           <div className="label-caps mb-1.5">
             Recovery event #{eventId}
-            {verified ? " · Razorpay Test Mode verified" : ""}
+            {verified ? " · Paytm Test Mode verified" : ""}
           </div>
           {rzp.isLoading ? (
             <Skeleton className="h-9 w-48" />
@@ -322,14 +322,14 @@ export default function RecoveryDetail() {
                 {agentEvents.isLoading ? (
                   <SkeletonText lines={4} />
                 ) : (
-                  <EvidenceTrail agentEvents={eventAgentEventItems} razorpay={r} />
+                  <EvidenceTrail agentEvents={eventAgentEventItems} paytm={r} />
                 )}
               </CardBody>
             </Card>
           </div>
 
           {/* right: the agent trace is the dominant element — full width, with the
-              Razorpay + customer-message panels demoted to a secondary row below */}
+              Paytm + customer-message panels demoted to a secondary row below */}
           <div className="space-y-3">
             {agentRun.isLoading ? (
               <Card>
@@ -372,9 +372,9 @@ export default function RecoveryDetail() {
                   className={`grid gap-3 ${r && showMsg ? "xl:grid-cols-2" : ""}`}
                 >
                   {r ? (
-                    <RazorpayCard
+                    <PaytmCard
                       interventions={r.interventions}
-                      config={r.razorpay_config}
+                      config={r.paytm_config}
                       amountPaise={r.amount_paise}
                     />
                   ) : null}

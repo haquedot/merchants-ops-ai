@@ -193,39 +193,39 @@ export interface Subscription {
   next_payment_at?: string | null;
 }
 
-// ---- per-event Razorpay view ------------------------------------------
-export interface RazorpayInterventionView {
+// ---- per-event Paytm view ---------------------------------------------
+export interface PaytmInterventionView {
   intervention_id: number;
   action_type: string;
   status: string;
-  razorpay_payment_link_id: string | null;
-  razorpay_short_url: string | null;
-  razorpay_reference_id: string | null;
-  razorpay_payment_id: string | null;
-  last_razorpay_status: string | null;
+  paytm_payment_link_id: string | null;
+  paytm_short_url: string | null;
+  paytm_reference_id: string | null;
+  paytm_payment_id: string | null;
+  last_paytm_status: string | null;
   payment_link_created: boolean;
   payment_link_paid: boolean;
   outcome_recorded: boolean;
   outcome_payment_recovered: boolean;
   recovered_amount_paise: number | null;
 }
-export interface RazorpayConfigStatus {
+export interface PaytmConfigStatus {
   test_mode: boolean;
   base_url: string;
-  key_id_configured: boolean;
-  key_id_is_test_key: boolean;
+  mid_configured: boolean;
+  mid_is_test_key: boolean;
   webhook_secret_configured: boolean;
   ready_for_live_calls: boolean;
 }
-export interface RecoveryEventRazorpay {
+export interface RecoveryEventPaytm {
   recovery_event_id: number;
   status: string;
   is_control: boolean;
   payment_recovered: boolean;
   payment_status: string;
   amount_paise: number;
-  interventions: RazorpayInterventionView[];
-  razorpay_config: RazorpayConfigStatus;
+  interventions: PaytmInterventionView[];
+  paytm_config: PaytmConfigStatus;
 }
 
 // ---- ML / uplift -----------------------------------------------------

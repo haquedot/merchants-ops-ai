@@ -175,7 +175,7 @@ mostly have recovered anyway.
 ## 9. Architecture
 
 ```
-Razorpay event
+Paytm event
    │
    ▼ point-in-time context   (app/ml/features/point_in_time.py — ONE feature body)
    ├─────────────────────────────► predictive P(Y|X,a)   (app/ml/  — unchanged)

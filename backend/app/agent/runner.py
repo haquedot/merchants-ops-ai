@@ -50,7 +50,7 @@ def run_recovery_agent(
     provider: LLMProvider | None = None,
     config: AgentConfig | None = None,
     persist: bool = True,
-    razorpay_client: object | None = None,
+    paytm_client: object | None = None,
     voice_service: object | None = None,
     triggered_by: str = "manual",
 ) -> AgentRunResult:
@@ -83,7 +83,7 @@ def run_recovery_agent(
 
     agent = RecoveryAgent(
         db, provider, config,
-        razorpay_client=razorpay_client, voice_service=voice_service,
+        paytm_client=paytm_client, voice_service=voice_service,
     )
     state = agent.run(recovery_event_id, dry_run=dry_run)
     result = _to_result(

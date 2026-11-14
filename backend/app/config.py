@@ -50,20 +50,18 @@ class Settings(BaseSettings):
     AGENT_MAX_TURNS: int = 0
     AGENT_TIMEOUT_SECONDS: float = 0.0
 
-    # --- Razorpay integration (app/integrations/razorpay/) -------------
+    # --- Paytm integration (app/integrations/paytm/) -----------------
     # TEST MODE ONLY in this stage. All optional: when unset, the live
     # execution path refuses to run and the agent degrades gracefully; the
     # rules / ML / uplift / dry-run paths are entirely unaffected. Secrets are
     # read from the environment / .env only and are never logged or serialised.
-    RAZORPAY_KEY_ID: str | None = None
-    RAZORPAY_KEY_SECRET: str | None = None
-    RAZORPAY_WEBHOOK_SECRET: str | None = None
-    RAZORPAY_BASE_URL: str = "https://api.razorpay.com/v1"
-    RAZORPAY_TEST_MODE: bool = True
-    RAZORPAY_TIMEOUT_SECONDS: float = 15.0
-    # Razorpay requires expire_by to be > 15 minutes from now; the adapter
-    # clamps anything smaller up to 16.
-    RAZORPAY_PAYMENT_LINK_EXPIRY_MINUTES: int = 60
+    PAYTM_MID: str | None = None
+    PAYTM_MERCHANT_KEY: str | None = None
+    PAYTM_WEBHOOK_SECRET: str | None = None
+    PAYTM_BASE_URL: str = "https://securegw-stage.paytm.in"
+    PAYTM_TEST_MODE: bool = True
+    PAYTM_TIMEOUT_SECONDS: float = 15.0
+    PAYTM_PAYMENT_LINK_EXPIRY_MINUTES: int = 60
 
     # --- Hinglish voice / text-to-speech (app/services/voice.py) -------
     # DEMO SCOPE: converts the agent's existing Hinglish customer_message into a

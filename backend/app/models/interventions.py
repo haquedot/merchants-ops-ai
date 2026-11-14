@@ -55,32 +55,32 @@ class Intervention(Base):
         nullable=True,
     )
 
-    # --- Razorpay Test Mode correlation (nullable; only set when the
+    # --- Paytm Test Mode correlation (nullable; only set when the
     #     Payment Link execution path runs for this intervention) --------
-    razorpay_reference_id: Mapped[str | None] = mapped_column(
+    paytm_reference_id: Mapped[str | None] = mapped_column(
         String(120),
         unique=True,
         nullable=True,
     )
 
-    razorpay_payment_link_id: Mapped[str | None] = mapped_column(
+    paytm_payment_link_id: Mapped[str | None] = mapped_column(
         String(64),
         unique=True,
         nullable=True,
         index=True,
     )
 
-    razorpay_short_url: Mapped[str | None] = mapped_column(
+    paytm_short_url: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
     )
 
-    razorpay_payment_id: Mapped[str | None] = mapped_column(
+    paytm_payment_id: Mapped[str | None] = mapped_column(
         String(64),
         nullable=True,
     )
 
-    last_razorpay_status: Mapped[str | None] = mapped_column(
+    last_paytm_status: Mapped[str | None] = mapped_column(
         String(30),
         nullable=True,
     )

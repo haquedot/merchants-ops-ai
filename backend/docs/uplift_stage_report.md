@@ -58,7 +58,7 @@ and all prior APIs are unchanged.
 ## 2. Architecture (text)
 
 ```
-Razorpay event
+Paytm event
    │
    ▼ point-in-time context      app/ml/features/point_in_time.py  (ONE _FEATURE_BODY_SQL)
    ├──────────────────────────────────►  predictive  P(Y | X, a)      app/ml/  (unchanged)
@@ -337,5 +337,5 @@ consulted to `AgentEvent.input_context`, and the existing orchestrator +
 experimentation layer execute and log exactly as today. The agent consumes the
 incremental‑value frame; it does not replace any model.
 
-Do **not** in that stage: build Razorpay API integration, remove the predictive
+Do **not** in that stage: build Paytm API integration, remove the predictive
 or experimentation layers, or let the agent write outside `AgentEvent`.
